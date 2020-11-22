@@ -44,6 +44,39 @@ Z_INTERNAL uint32_t compare256_c(const uint8_t *src0, const uint8_t *src1) {
     return compare256_c_static(src0, src1);
 }
 
+Z_INTERNAL uint32_t compare256_rle_c(const uint8_t *src0, const uint8_t *src1) {
+    uint32_t len = 0;
+
+    do {
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+        if (*src0 != *src1)
+            return len;
+        src1 += 1, len += 1;
+    } while (len < 256);
+
+    return 256;
+}
+
 #define LONGEST_MATCH       longest_match_c
 #define COMPARE256          compare256_c_static
 
@@ -80,6 +113,33 @@ static inline uint32_t compare256_unaligned_16_static(const uint8_t *src0, const
 
 Z_INTERNAL uint32_t compare256_unaligned_16(const uint8_t *src0, const uint8_t *src1) {
     return compare256_unaligned_16_static(src0, src1);
+}
+
+Z_INTERNAL uint32_t compare256_rle_unaligned_16(const uint8_t *src0, const uint8_t *src1) {
+    uint32_t len = 0;
+    uint16_t src0_cmp = ((uint16_t)*src0 << 8) | *src0;
+    uint16_t src1_cmp;
+
+    do {
+        zmemcpy_2(&src1_cmp, src1);
+        if (src0_cmp != src1_cmp)
+            return len + (*src0 == *src1);
+        src1 += 2, len += 2;
+        zmemcpy_2(&src1_cmp, src1);
+        if (src0_cmp != src1_cmp)
+            return len + (*src0 == *src1);
+        src1 += 2, len += 2;
+        zmemcpy_2(&src1_cmp, src1);
+        if (src0_cmp != src1_cmp)
+            return len + (*src0 == *src1);
+        src1 += 2, len += 2;
+        zmemcpy_2(&src1_cmp, src1);
+        if (src0_cmp != src1_cmp)
+            return len + (*src0 == *src1);
+        src1 += 2, len += 2;
+    } while (len < 256);
+
+    return 256;
 }
 
 #define LONGEST_MATCH       longest_match_unaligned_16
@@ -120,6 +180,28 @@ Z_INTERNAL uint32_t compare256_unaligned_32(const uint8_t *src0, const uint8_t *
     return compare256_unaligned_32_static(src0, src1);
 }
 
+Z_INTERNAL uint32_t compare256_rle_unaligned_32(const uint8_t *src0, const uint8_t *src1) {
+    uint32_t len = 0;
+    uint16_t src0_cmp = ((uint16_t)*src0 << 8) | *src0;
+    uint32_t sv = ((uint32_t)src0_cmp << 16) | src0_cmp;
+
+    do {
+        uint32_t mv, diff;
+
+        zmemcpy_4(&mv, src1);
+
+        diff = sv ^ mv;
+        if (diff) {
+            uint32_t match_byte = __builtin_ctz(diff) / 8;
+            return len + match_byte;
+        }
+
+        src1 += 4, len += 4;
+    } while (len < 256);
+
+    return 256;
+}
+
 #define LONGEST_MATCH       longest_match_unaligned_32
 #define COMPARE256          compare256_unaligned_32_static
 
@@ -158,6 +240,29 @@ static inline uint32_t compare256_unaligned_64_static(const uint8_t *src0, const
 
 Z_INTERNAL uint32_t compare256_unaligned_64(const uint8_t *src0, const uint8_t *src1) {
     return compare256_unaligned_64_static(src0, src1);
+}
+
+Z_INTERNAL uint32_t compare256_rle_unaligned_64(const uint8_t *src0, const uint8_t *src1) {
+    uint32_t len = 0;
+    uint16_t src0_cmp = ((uint16_t)*src0 << 8) | *src0;
+    uint32_t src0_cmp32 = ((uint32_t)src0_cmp << 16) | src0_cmp;
+    uint64_t sv = ((uint64_t)src0_cmp32 << 32) | src0_cmp32;
+
+    do {
+        uint64_t mv, diff;
+
+        zmemcpy_8(&mv, src1);
+
+        diff = sv ^ mv;
+        if (diff) {
+            uint64_t match_byte = __builtin_ctzll(diff) / 8;
+            return len + (uint32_t)match_byte;
+        }
+
+        src1 += 8, len += 8;
+    } while (len < 256);
+
+    return 256;
 }
 
 #define LONGEST_MATCH       longest_match_unaligned_64

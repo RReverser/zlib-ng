@@ -396,6 +396,23 @@ Z_INTERNAL uint32_t compare256_stub(const uint8_t *src0, const uint8_t *src1) {
     return functable.compare256(src0, src1);
 }
 
+Z_INTERNAL uint32_t compare256_rle_stub(const uint8_t *src0, const uint8_t *src1) {
+
+#ifdef UNALIGNED_OK
+#  if defined(UNALIGNED64_OK) && defined(HAVE_BUILTIN_CTZLL)
+    functable.compare256_rle = &compare256_rle_unaligned_64;
+#  elif defined(HAVE_BUILTIN_CTZ)
+    functable.compare256_rle = &compare256_rle_unaligned_32;
+#  else
+    functable.compare256_rle = &compare256_rle_unaligned_16;
+#  endif
+#else
+    functable.compare256_rle = &compare256_rle_c;
+#endif
+
+    return functable.compare256_rle(src0, src1);
+}
+
 /* functable init */
 Z_INTERNAL Z_TLS struct functable_s functable = {
     adler32_stub,
@@ -404,6 +421,7 @@ Z_INTERNAL Z_TLS struct functable_s functable = {
     crc32_fold_copy_stub,
     crc32_fold_final_stub,
     compare256_stub,
+    compare256_rle_stub,
     chunksize_stub,
     chunkcopy_stub,
     chunkunroll_stub,

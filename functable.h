@@ -16,6 +16,7 @@ struct functable_s {
     void     (* crc32_fold_copy)    (crc32_fold *crc, uint8_t *dst, const uint8_t *src, size_t len);
     uint32_t (* crc32_fold_final)   (crc32_fold *crc);
     uint32_t (* compare256)         (const uint8_t *src0, const uint8_t *src1);
+    uint32_t (* compare256_rle)     (const uint8_t *src0, const uint8_t *src1);
     uint32_t (* chunksize)          (void);
     uint8_t* (* chunkcopy)          (uint8_t *out, uint8_t const *from, unsigned len);
     uint8_t* (* chunkunroll)        (uint8_t *out, unsigned *dist, unsigned *len);

@@ -16,8 +16,7 @@
  */
 Z_INTERNAL block_state deflate_rle(deflate_state *s, int flush) {
     int bflush = 0;                 /* set if current block must be flushed */
-    unsigned int prev;              /* byte at distance one to match */
-    unsigned char *scan, *strend;   /* scan goes up to strend for length of run */
+    unsigned char *scan;            /* scan goes up to strend for length of run */
     uint32_t match_len = 0;
 
     for (;;) {
@@ -36,19 +35,11 @@ Z_INTERNAL block_state deflate_rle(deflate_state *s, int flush) {
         /* See how many times the previous byte repeats */
         if (s->lookahead >= STD_MIN_MATCH && s->strstart > 0) {
             scan = s->window + s->strstart - 1;
-            prev = *scan;
-            if (prev == *++scan && prev == *++scan && prev == *++scan) {
-                strend = s->window + s->strstart + STD_MAX_MATCH;
-                do {
-                } while (prev == *++scan && prev == *++scan &&
-                         prev == *++scan && prev == *++scan &&
-                         prev == *++scan && prev == *++scan &&
-                         prev == *++scan && prev == *++scan &&
-                         scan < strend);
-                match_len = STD_MAX_MATCH - (unsigned int)(strend - scan);
-                match_len = MIN(match_len, s->lookahead);
-            }
-            Assert(scan <= s->window + s->window_size - 1, "wild scan");
+            if (scan[0] == scan[1] && scan[1] == scan[2])
+                match_len = functable.compare256_rle(scan, scan+3)+2;
+            if (match_len > s->lookahead)
+                match_len = s->lookahead;
+            Assert(scan+match_len <= s->window + s->window_size - 1, "wild scan");
         }
 
         /* Emit match if have run of STD_MIN_MATCH or longer, else emit literal */

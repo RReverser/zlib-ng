@@ -128,6 +128,20 @@ extern uint32_t compare256_unaligned_avx2(const uint8_t *src0, const uint8_t *sr
 #endif
 #endif
 
+/* compare256_rle */
+typedef uint32_t (*compare256_rle_func)(const uint8_t *src0, const uint8_t *src1);
+
+extern uint32_t compare256_rle_c(const uint8_t *src0, const uint8_t *src1);
+#ifdef UNALIGNED_OK
+extern uint32_t compare256_rle_unaligned_16(const uint8_t *src0, const uint8_t *src1);
+#if defined(HAVE_BUILTIN_CTZ)
+extern uint32_t compare256_rle_unaligned_32(const uint8_t *src0, const uint8_t *src1);
+#endif
+#if defined(UNALIGNED64_OK) && defined(HAVE_BUILTIN_CTZLL)
+extern uint32_t compare256_rle_unaligned_64(const uint8_t *src0, const uint8_t *src1);
+#endif
+#endif
+
 #ifdef DEFLATE_H_
 /* insert_string */
 extern void insert_string_c(deflate_state *const s, const uint32_t str, uint32_t count);
