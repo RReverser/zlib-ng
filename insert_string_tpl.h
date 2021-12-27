@@ -31,7 +31,7 @@
 #ifndef HASH_CALC_READ
 #  ifdef UNALIGNED_OK
 #    define HASH_CALC_READ \
-        val = *(uint32_t *)(strstart);
+        zmemcpy_4(&val, strstart);
 #  else
 #    define HASH_CALC_READ \
         val  = ((uint32_t)(strstart[0])); \

@@ -259,6 +259,29 @@ void Z_INTERNAL   zng_cfree(void *opaque, void *ptr);
 #  define ALIGNED_(x) __declspec(align(x))
 #endif
 
+#if defined(UNALIGNED_OK) && (defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 8)
+#  define zmemcmp_2(str1, str2) (*(uint16_t *)(str1) != *(uint16_t *)(str2))
+#  define zmemcmp_4(str1, str2) (*(uint32_t *)(str1) != *(uint32_t *)(str2))
+#  define zmemcpy_2(dst, src)   *(uint16_t *)(dst) = *(uint16_t *)(src)
+#  define zmemcpy_4(dst, src)   *(uint32_t *)(dst) = *(uint32_t *)(src)
+#  ifdef UNALIGNED64_OK
+#    define zmemcmp_8(str1, str2) (*(uint64_t *)(str1) != *(uint64_t *)(str2))
+#    define zmemcpy_8(dst, src)   *(uint64_t *)(dst) = *(uint64_t *)(src)
+#  else
+#    define zmemcmp_8(str1, str2) (((uint32_t *)(str1))[0] != ((uint32_t *)(str2))[0] || \
+                                   ((uint32_t *)(str1))[1] != ((uint32_t *)(str2))[1])
+#    define zmemcpy_8(dst, src)   ((uint32_t *)(dst))[0] = ((uint32_t *)(src))[0], \
+                                  ((uint32_t *)(dst))[1] = ((uint32_t *)(src))[1]
+#  endif
+#else
+#  define zmemcmp_2(str1, str2) memcmp((uint8_t *)(str1), (uint8_t *)(str2), 2)
+#  define zmemcmp_4(str1, str2) memcmp((uint8_t *)(str1), (uint8_t *)(str2), 4)
+#  define zmemcmp_8(str1, str2) memcmp((uint8_t *)(str1), (uint8_t *)(str2), 8)
+#  define zmemcpy_2(dst, src)   memcpy((uint8_t *)(dst), (uint8_t *)(src), 2)
+#  define zmemcpy_4(dst, src)   memcpy((uint8_t *)(dst), (uint8_t *)(src), 4)
+#  define zmemcpy_8(dst, src)   memcpy((uint8_t *)(dst), (uint8_t *)(src), 8)
+#endif
+
 #if defined(X86_FEATURES)
 #  include "arch/x86/x86.h"
 #elif defined(ARM_FEATURES)

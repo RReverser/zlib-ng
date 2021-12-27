@@ -5,7 +5,7 @@
 #include "zbuild.h"
 #include "zutil.h"
 
-// We need sizeof(chunk_t) to be 8, no matter what.
+/* Define 8 byte chunks differently depending on unaligned support */
 #if defined(UNALIGNED64_OK)
 typedef uint64_t chunk_t;
 #elif defined(UNALIGNED_OK)
@@ -34,27 +34,24 @@ static inline void chunkmemset_1(uint8_t *from, chunk_t *chunk) {
 static inline void chunkmemset_4(uint8_t *from, chunk_t *chunk) {
 #if defined(UNALIGNED64_OK)
     uint32_t half_chunk;
-    half_chunk = *(uint32_t *)from;
+    zmemcpy_4(&half_chunk, from);
     *chunk = 0x0000000100000001 * (uint64_t)half_chunk;
 #elif defined(UNALIGNED_OK)
-    chunk->u32[0] = *(uint32_t *)from;
+    zmemcpy_4(&chunk->u32[0], from);
     chunk->u32[1] = chunk->u32[0];
 #else
     uint8_t *chunkptr = (uint8_t *)chunk;
-    memcpy(chunkptr, from, 4);
-    memcpy(chunkptr+4, from, 4);
+    zmemcpy_4(chunkptr, from);
+    zmemcpy_4(chunkptr+4, from);
 #endif
 }
 
 static inline void chunkmemset_8(uint8_t *from, chunk_t *chunk) {
-#if defined(UNALIGNED64_OK)
-    *chunk = *(uint64_t *)from;
-#elif defined(UNALIGNED_OK)
-    uint32_t* p = (uint32_t *)from;
-    chunk->u32[0] = p[0];
-    chunk->u32[1] = p[1];
+#if defined(UNALIGNED_OK) && !defined(UNALIGNED64_OK)
+    zmemcpy_4(&chunk->u32[0], from);
+    zmemcpy_4(&chunk->u32[1], from+4);
 #else
-    memcpy(chunk, from, sizeof(chunk_t));
+    zmemcpy_8(chunk, from);
 #endif
 }
 
@@ -63,13 +60,11 @@ static inline void loadchunk(uint8_t const *s, chunk_t *chunk) {
 }
 
 static inline void storechunk(uint8_t *out, chunk_t *chunk) {
-#if defined(UNALIGNED64_OK)
-    *(uint64_t *)out = *chunk;
-#elif defined(UNALIGNED_OK)
-    ((uint32_t *)out)[0] = chunk->u32[0];
-    ((uint32_t *)out)[1] = chunk->u32[1];
+#if defined(UNALIGNED_OK) && !defined(UNALIGNED64_OK)
+    zmemcpy_4(out, &chunk->u32[0]);
+    zmemcpy_4(out+4, &chunk->u32[1]);
 #else
-    memcpy(out, chunk, sizeof(chunk_t));
+    zmemcpy_8(out, chunk);
 #endif
 }
 
