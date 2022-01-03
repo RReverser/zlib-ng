@@ -1188,22 +1188,6 @@ if(ZLIB_ENABLE_TESTS)
         add_test(NAME ${target} COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:${target}>)
     endmacro()
 
-    file(GLOB TEST_SRCS
-        LIST_DIRECTORIES false
-        RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/test
-        ${CMAKE_CURRENT_SOURCE_DIR}/test/test_*.c)
-
-    foreach(TEST_SRC ${TEST_SRCS})
-        get_filename_component(TEST_NAME ${TEST_SRC} NAME_WE)
-        add_simple_test_executable(${TEST_NAME})
-    endforeach()
-
-    if(NOT WIN32 AND ZLIB_COMPAT)
-        add_simple_test_executable(CVE-2003-0107)
-    endif()
-
-    add_simple_test_executable(example)
-
     set(MINIGZIP_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:minigzip>)
     add_executable(minigzip test/minigzip.c)
     configure_test_executable(minigzip)
@@ -1303,6 +1287,7 @@ if(ZLIB_ENABLE_TESTS)
         endforeach()
     endif()
 
+    add_subdirectory(test)
     if(WITH_BENCHMARKS)
         add_subdirectory(test/benchmarks)
     endif()
