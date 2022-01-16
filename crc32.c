@@ -48,7 +48,7 @@ uint32_t Z_EXPORT PREFIX(crc32)(uint32_t crc, const unsigned char *buf, uint32_t
 /* ========================================================================= */
 
 /*
-   This BYFOUR code accesses the passed unsigned char * buffer with a 32-bit
+   This BYEIGHT code accesses the passed unsigned char * buffer with a 64-bit
    integer pointer type. This violates the strict aliasing rule, where a
    compiler can assume, for optimization purposes, that two pointers to
    fundamentally different types won't ever point to the same memory. This can
@@ -60,55 +60,62 @@ uint32_t Z_EXPORT PREFIX(crc32)(uint32_t crc, const unsigned char *buf, uint32_t
  */
 
 /* ========================================================================= */
+
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define DOSWAP(crc) (crc)
-#define DO1 \
-    c = crc_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8)
-#define DO4 c ^= *buf4++; \
-    c = crc_table[3][c & 0xff] ^ crc_table[2][(c >> 8) & 0xff] ^ \
-        crc_table[1][(c >> 16) & 0xff] ^ crc_table[0][c >> 24]
+#define DO1(b) \
+    c = crc_table[0][(c ^ b) & 0xff] ^ (c >> 8)
+#define DO8(b) c ^= b; \
+    c = crc_table[7][c & 0xFF] ^ \
+        crc_table[6][((c >> 8) & 0xFF)] ^ \
+        crc_table[5][((c >> 16) & 0xFF)] ^ \
+        crc_table[4][((c >> 24) & 0xFF)] ^ \
+        crc_table[3][((c >> 32) & 0xFF)] ^ \
+        crc_table[2][((c >> 40) & 0xFF)] ^ \
+        crc_table[1][((c >> 48) & 0xFF)] ^ \
+        crc_table[0][c >> 56]
 #elif BYTE_ORDER == BIG_ENDIAN
 #define DOSWAP(crc) ZSWAP32(crc)
-#define DO1 \
-    c = crc_table[4][(c >> 24) ^ *buf++] ^ (c << 8)
-#define DO4 c ^= *buf4++; \
-    c = crc_table[4][c & 0xff] ^ crc_table[5][(c >> 8) & 0xff] ^ \
-        crc_table[6][(c >> 16) & 0xff] ^ crc_table[7][c >> 24]
+#define DO1(b) \
+    c = crc_table[4][(c >> 24) ^ b] ^ (c << 8)
+#define DO8(b) c ^= b; \
+    c = crc_table[7][c >> 56] ^ \
+        crc_table[6][((c >> 48) & 0xFF)] ^ \
+        crc_table[5][((c >> 40) & 0xFF)] ^ \
+        crc_table[4][((c >> 32) & 0xFF)] ^ \
+        crc_table[3][((c >> 24) & 0xFF)] ^ \
+        crc_table[2][((c >> 16) & 0xFF)] ^ \
+        crc_table[1][((c >> 8) & 0xFF)] ^ \
+        crc_table[0][c & 0xFF]
 #else
 #  error "No endian defined"
 #endif
-#define DO32 DO4; DO4; DO4; DO4; DO4; DO4; DO4; DO4
 
-/* ========================================================================= */
-Z_INTERNAL uint32_t crc32_byfour(uint32_t crc, const unsigned char *buf, uint64_t len) {
-    Z_REGISTER uint32_t c;
-    Z_REGISTER const uint32_t *buf4;
+Z_INTERNAL uint32_t crc32_byeight(uint32_t crc, const unsigned char *buf, uint64_t len) {
+    Z_REGISTER uint64_t c;
+    Z_REGISTER const uint64_t *buf8;
 
     c = DOSWAP(crc);
     c = ~c;
-    while (len && ((ptrdiff_t)buf & 3)) {
-        DO1;
+    while (len && ((ptrdiff_t)buf & 7)) {
+        DO1(*buf++);
         len--;
     }
 
-    buf4 = (const uint32_t *)(const void *)buf;
+    buf8 = (const uint64_t *)(const void *)buf;
 
-#ifdef UNROLL_MORE
-    while (len >= 32) {
-        DO32;
-        len -= 32;
+    while (len >= 8) {
+        uint64_t b = *buf8++;
+        DO8(b);
+        len -= 8;
     }
-#endif
 
-    while (len >= 4) {
-        DO4;
-        len -= 4;
-    }
-    buf = (const unsigned char *)buf4;
+    buf = (const unsigned char *)buf8;
 
     if (len) do {
-        DO1;
+        DO1(*buf++);
     } while (--len);
+
     c = ~c;
-    return DOSWAP(c);
+    return (uint32_t)DOSWAP(c);
 }
