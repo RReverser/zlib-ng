@@ -23,6 +23,7 @@ endif()
 
 add_executable(benchmark_zlib
     benchmark_adler32.cc
+    benchmark_chunkset.cc
     benchmark_compare256.cc
     benchmark_crc32.cc
     benchmark_main.cc

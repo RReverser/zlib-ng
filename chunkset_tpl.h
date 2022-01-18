@@ -110,7 +110,7 @@ Z_INTERNAL uint8_t* CHUNKMEMSET(uint8_t *out, unsigned dist, unsigned len) {
        Assert(len >= sizeof(uint64_t), "chunkmemset should be called on larger chunks"); */
     Assert(dist > 0, "chunkmemset cannot have a distance 0");
 
-    unsigned char *from = out - dist;
+    uint8_t *from = out - dist;
     chunk_t chunk;
     unsigned sz = sizeof(chunk);
     if (len < sz) {
@@ -144,7 +144,7 @@ Z_INTERNAL uint8_t* CHUNKMEMSET(uint8_t *out, unsigned dist, unsigned len) {
     if (dist == sz) {
         loadchunk(from, &chunk);
     } else if (dist < sz) {
-        unsigned char *end = out + len - 1;
+        uint8_t *end = out + len - 1;
         while (len > dist) {
             out = CHUNKCOPY_SAFE(out, from, dist, end);
             len -= dist;
@@ -167,9 +167,9 @@ Z_INTERNAL uint8_t* CHUNKMEMSET(uint8_t *out, unsigned dist, unsigned len) {
     }
 
     /* Last, deal with the case when LEN is not a multiple of SZ. */
-    if (rem) {
-        memcpy(out, from, rem);
-        out += rem;
+    while (rem != 0) {
+        *out++ = *from++;
+        --rem;
     }
 
     return out;
