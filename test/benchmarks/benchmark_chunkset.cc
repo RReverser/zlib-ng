@@ -44,8 +44,9 @@ public:
 
     void Bench(benchmark::State& state, chunkcopy_func chunkcopy) {
         const uint8_t *ret;
+        int32_t len = state.range(0);
         for (auto _ : state) {
-            ret = chunkcopy(out, (uint8_t *)random_ints, MAX_RANDOM_INTS_SIZE);
+            ret = chunkcopy(out, (uint8_t *)random_ints, len);
             benchmark::DoNotOptimize(ret);
         }
     }
@@ -64,7 +65,7 @@ public:
         Bench(state, fptr); \
     } \
     BENCHMARK_REGISTER_F(chunkcopy, name) \
-        ->RangeMultiplier(2)->Range(1024, MAX_RANDOM_INTS);
+        ->RangeMultiplier(2)->Range(2, 258);
 
 BENCHMARK_CHUNKCOPY(memcpy, chunkcopy_memcpy, 1);
 BENCHMARK_CHUNKCOPY(c, chunkcopy_c, 1);
@@ -107,9 +108,10 @@ public:
 
     void Bench(benchmark::State& state, chunkcopy_safe_func chunkcopy_safe) {
         const uint8_t *ret;
-        uint8_t *limit = (uint8_t *)random_ints + MAX_RANDOM_INTS_SIZE;
+        int32_t len = state.range(0);
+        uint8_t *limit = (uint8_t *)random_ints + len;
         for (auto _ : state) {
-            ret = chunkcopy_safe(out, (uint8_t *)random_ints, MAX_RANDOM_INTS_SIZE, limit);
+            ret = chunkcopy_safe(out, (uint8_t *)random_ints, len, limit);
             benchmark::DoNotOptimize(ret);
         }
     }
@@ -128,7 +130,7 @@ public:
         Bench(state, fptr); \
     } \
     BENCHMARK_REGISTER_F(chunkcopy_safe, name) \
-        ->RangeMultiplier(2)->Range(1024, MAX_RANDOM_INTS);
+        ->RangeMultiplier(2)->Range(2, 258);
 
 BENCHMARK_CHUNKCOPYSAFE(memcpy, chunkcopy_safe_memcpy, 1);
 BENCHMARK_CHUNKCOPYSAFE(c, chunkcopy_safe_c, 1);
