@@ -211,7 +211,8 @@ void Z_INTERNAL zng_inflate_fast(PREFIX3(stream) *strm) {
                 if (len > dist || dist < state->chunksize) {
                     out = functable.chunkmemset(out, dist, len);
                 } else {
-                    out = functable.chunkcopy(out, out - dist, len);
+                    memcpy(out, out - dist, len);
+                    out += len;
                 }
             } else if ((op & 64) == 0) {          /* 2nd level distance code */
                 here = dcode + here->val + BITS(op);
@@ -430,7 +431,8 @@ void Z_INTERNAL zng_inflate_fast_back(PREFIX3(stream) *strm, unsigned long start
                         from += wsize - op;
                         if (op < len) {         /* some from end of window */
                             len -= op;
-                            out = functable.chunkcopy_safe(out, from, op, safe);
+                            memcpy(out, from, op);
+                            out += op;
                             from = window;      /* more from start of window */
                             op = wnext;
                             /* This (rare) case can create a situation where
@@ -440,17 +442,21 @@ void Z_INTERNAL zng_inflate_fast_back(PREFIX3(stream) *strm, unsigned long start
                     }
                     if (op < len) {             /* still need some from output */
                         len -= op;
-                        out = functable.chunkcopy_safe(out, from, op, safe);
+                        memcpy(out, from, op);
+                        out += op;
                         out = functable.chunkunroll(out, &dist, &len);
-                        out = functable.chunkcopy_safe(out, out - dist, len, safe);
+                        memcpy(out, out - dist, len);
+                        out += len;
                     } else {
-                        out = functable.chunkcopy_safe(out, from, len, safe);
+                        memcpy(out, from, len);
+                        out += len;
                     }
                 } else if (extra_safe) {
                     /* Whole reference is in range of current output. */
-                    if (dist >= len || dist >= state->chunksize)
-                        out = functable.chunkcopy_safe(out, out - dist, len, safe);
-                    else
+                    if (dist >= len || dist >= state->chunksize) {
+                        memcpy(out, out - dist, len);
+                        out += len;
+                    } else
                         out = functable.chunkmemset_safe(out, dist, len, (unsigned)((safe - out) + 1));
                 } else {
                     /* Whole reference is in range of current output.  No range checks are
@@ -458,9 +464,10 @@ void Z_INTERNAL zng_inflate_fast_back(PREFIX3(stream) *strm, unsigned long start
                        so unroll and roundoff operations can write beyond `out+len` so long
                        as they stay within 258 bytes of `out`.
                     */
-                    if (dist >= len || dist >= state->chunksize)
-                        out = functable.chunkcopy(out, out - dist, len);
-                    else
+                    if (dist >= len || dist >= state->chunksize) {
+                        memcpy(out, out - dist, len);
+                        out += len;
+                    } else
                         out = functable.chunkmemset(out, dist, len);
                 }
             } else if ((op & 64) == 0) {          /* 2nd level distance code */
