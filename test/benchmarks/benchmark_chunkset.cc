@@ -65,7 +65,7 @@ public:
         Bench(state, fptr); \
     } \
     BENCHMARK_REGISTER_F(chunkcopy, name) \
-        ->RangeMultiplier(2)->Range(2, 258);
+        ->DenseRange(2, 258, 3);
 
 BENCHMARK_CHUNKCOPY(memcpy, chunkcopy_memcpy, 1);
 BENCHMARK_CHUNKCOPY(c, chunkcopy_c, 1);
@@ -77,10 +77,11 @@ BENCHMARK_CHUNKCOPY(power8, chunkcopy_power8, power_cpu_has_arch_2_07);
 #endif
 
 #ifdef X86_SSE2_CHUNKSET
-BENCHMARK_CHUNKCOPY(sse2, chunkcopy_sse2, x86_cpu_has_sse2);
+//BENCHMARK_CHUNKCOPY(sse2, chunkcopy_sse2, x86_cpu_has_sse2);
 #endif
 #ifdef X86_AVX_CHUNKSET
 BENCHMARK_CHUNKCOPY(avx, chunkcopy_avx, x86_cpu_has_avx2);
+//BENCHMARK_CHUNKCOPY(avx_a, chunkcopy_avx_a, x86_cpu_has_avx2);
 #endif
 
 typedef uint8_t* (*chunkcopy_safe_func)(uint8_t *out, uint8_t const *from, unsigned len, uint8_t *safe);
@@ -130,7 +131,7 @@ public:
         Bench(state, fptr); \
     } \
     BENCHMARK_REGISTER_F(chunkcopy_safe, name) \
-        ->RangeMultiplier(2)->Range(2, 258);
+        ->DenseRange(2, 258, 3);
 
 BENCHMARK_CHUNKCOPYSAFE(memcpy, chunkcopy_safe_memcpy, 1);
 BENCHMARK_CHUNKCOPYSAFE(c, chunkcopy_safe_c, 1);
@@ -142,7 +143,7 @@ BENCHMARK_CHUNKCOPYSAFE(power8, chunkcopy_safe_power8, power_cpu_has_arch_2_07);
 #endif
 
 #ifdef X86_SSE2_CHUNKSET
-BENCHMARK_CHUNKCOPYSAFE(sse2, chunkcopy_safe_sse2, x86_cpu_has_sse2);
+//BENCHMARK_CHUNKCOPYSAFE(sse2, chunkcopy_safe_sse2, x86_cpu_has_sse2);
 #endif
 #ifdef X86_AVX_CHUNKSET
 BENCHMARK_CHUNKCOPYSAFE(avx, chunkcopy_safe_avx, x86_cpu_has_avx2);

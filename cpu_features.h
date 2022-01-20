@@ -107,6 +107,7 @@ extern uint8_t* chunkmemset_safe_sse2(uint8_t *out, unsigned dist, unsigned len,
 #ifdef X86_AVX_CHUNKSET
 extern uint32_t chunksize_avx(void);
 extern uint8_t* chunkcopy_avx(uint8_t *out, uint8_t const *from, unsigned len);
+extern uint8_t* chunkcopy_avx_a(uint8_t *out, uint8_t const *from, unsigned len);
 extern uint8_t* chunkcopy_safe_avx(uint8_t *out, uint8_t const *from, unsigned len, uint8_t *safe);
 extern uint8_t* chunkunroll_avx(uint8_t *out, unsigned *dist, unsigned *len);
 extern uint8_t* chunkmemset_avx(uint8_t *out, unsigned dist, unsigned len);

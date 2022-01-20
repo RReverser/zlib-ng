@@ -42,6 +42,7 @@ static inline void storechunk(uint8_t *out, chunk_t *chunk) {
 
 #define CHUNKSIZE        chunksize_avx
 #define CHUNKCOPY        chunkcopy_avx
+#define CHUNKCOPY2       chunkcopy_avx_a
 #define CHUNKCOPY_SAFE   chunkcopy_safe_avx
 #define CHUNKUNROLL      chunkunroll_avx
 #define CHUNKMEMSET      chunkmemset_avx

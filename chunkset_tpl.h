@@ -17,7 +17,7 @@ Z_INTERNAL uint32_t CHUNKSIZE(void) {
    (chunk_t bytes or fewer) will fall straight through the loop
    without iteration, which will hopefully make the branch prediction more
    reliable. */
-Z_INTERNAL uint8_t* CHUNKCOPY(uint8_t *out, uint8_t const *from, unsigned len) {
+static inline uint8_t *chunkcopy(uint8_t *out, uint8_t const *from, unsigned len) {
     Assert(len > 0, "chunkcopy should never have a length 0");
     chunk_t chunk;
     int32_t align = ((len - 1) % sizeof(chunk_t)) + 1;
@@ -36,50 +36,53 @@ Z_INTERNAL uint8_t* CHUNKCOPY(uint8_t *out, uint8_t const *from, unsigned len) {
     return out;
 }
 
+Z_INTERNAL uint8_t* CHUNKCOPY(uint8_t *out, uint8_t const *from, unsigned len) {
+    return chunkcopy(out, from, len);
+}
+
 /* Behave like chunkcopy, but avoid writing beyond of legal output. */
 Z_INTERNAL uint8_t* CHUNKCOPY_SAFE(uint8_t *out, uint8_t const *from, unsigned len, uint8_t *safe) {
     unsigned safelen = (unsigned)((safe - out) + 1);
+
     len = MIN(len, safelen);
-#if CHUNK_SIZE >= 32
-    while (len >= 32) {
-        memcpy(out, from, 32);
-        out += 32;
-        from += 32;
-        len -= 32;
-    }
-#endif
+    memcpy(out, from, len);
+    //out += len;
+    return out + len;
+    if (len < sizeof(chunk_t)) {
 #if CHUNK_SIZE >= 16
-    while (len >= 16) {
-        memcpy(out, from, 16);
-        out += 16;
-        from += 16;
-        len -= 16;
-    }
+        if (len >= 16) {
+            memcpy(out, from, 16);
+            out += 16;
+            from += 16;
+            len -= 16;
+        }
 #endif
 #if CHUNK_SIZE >= 8
-    while (len >= 8) {
-        memcpy(out, from, 8);
-        out += 8;
-        from += 8;
-        len -= 8;
-    }
+        if (len >= 8) {
+            memcpy(out, from, 8);
+            out += 8;
+            from += 8;
+            len -= 8;
+        }
 #endif
-    if (len >= 4) {
-        memcpy(out, from, 4);
-        out += 4;
-        from += 4;
-        len -= 4;
+        if (len >= 4) {
+            memcpy(out, from, 4);
+            out += 4;
+            from += 4;
+            len -= 4;
+        }
+        if (len >= 2) {
+            memcpy(out, from, 2);
+            out += 2;
+            from += 2;
+            len -= 2;
+        }
+        if (len == 1) {
+            *out++ = *from++;
+        }
+        return out;
     }
-    if (len >= 2) {
-        memcpy(out, from, 2);
-        out += 2;
-        from += 2;
-        len -= 2;
-    }
-    if (len == 1) {
-        *out++ = *from++;
-    }
-    return out;
+    return chunkcopy(out, from, len);
 }
 
 /* Perform short copies until distance can be rewritten as being at least
