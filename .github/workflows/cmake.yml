@@ -453,7 +453,7 @@ jobs:
         cmake ${{ matrix.build-src-dir || '.' }} ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=${{ matrix.build-config || 'Release' }} -DBUILD_SHARED_LIBS=OFF -DWITH_FUZZERS=ON -DWITH_CODE_COVERAGE=ON -DWITH_MAINTAINER_WARNINGS=ON
       env:
         CC: ${{ matrix.compiler }}
-        LD: ${{ matrix.linker }}
+        LD: ${{ matrix.compiler }}
         CFLAGS: ${{ matrix.cflags }}
         LDFLAGS: ${{ matrix.ldflags }}
         CI: true
