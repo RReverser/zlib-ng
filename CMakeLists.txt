@@ -1165,6 +1165,12 @@ endif()
 option(ZLIB_ENABLE_TESTS "Build test binaries" ON)
 if(ZLIB_ENABLE_TESTS)
     enable_testing()
+
+    add_subdirectory(test)
+    if(WITH_BENCHMARKS)
+        add_subdirectory(test/benchmarks)
+    endif()
+
     macro(configure_test_executable target)
         target_include_directories(${target} PUBLIC
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
@@ -1179,13 +1185,6 @@ if(ZLIB_ENABLE_TESTS)
                 target_link_libraries(${target} ${ZLIB_LIBRARIES})
             endif()
         endif()
-    endmacro()
-
-    macro(add_simple_test_executable target)
-        add_executable(${target} test/${target}.c)
-        configure_test_executable(${target})
-        target_link_libraries(${target} zlib)
-        add_test(NAME ${target} COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:${target}>)
     endmacro()
 
     set(MINIGZIP_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:minigzip>)
@@ -1219,10 +1218,13 @@ if(ZLIB_ENABLE_TESTS)
     configure_test_executable(switchlevels)
     target_link_libraries(switchlevels zlib)
 
-    add_simple_test_executable(infcover)
+    add_executable(infcover test/infcover.c)
+    configure_test_executable(infcover)
+    target_link_libraries(infcover zlib)
     if(NOT BUILD_SHARED_LIBS)
         target_sources(infcover PRIVATE inftrees.c)
     endif()
+    add_test(NAME infcover COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:infcover>)
 
     add_executable(makefixed tools/makefixed.c inftrees.c)
     target_include_directories(makefixed PUBLIC
@@ -1285,11 +1287,6 @@ if(ZLIB_ENABLE_TESTS)
             set(FUZZER_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:fuzzer_${FUZZER}> ${ALL_SRC_FILES})
             add_test(NAME fuzzer_${FUZZER} COMMAND ${FUZZER_COMMAND})
         endforeach()
-    endif()
-
-    add_subdirectory(test)
-    if(WITH_BENCHMARKS)
-        add_subdirectory(test/benchmarks)
     endif()
 
     macro(test_minigzip name path)
