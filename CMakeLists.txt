@@ -223,9 +223,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
                 set(CMAKE_REQUIRED_FLAGS)
                 if(FLOATABI)
                     message(STATUS "ARM floating point arch: ${FLOATABI}")
-
-                    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLOATABI}")
-                    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLOATABI}")
+                    add_compile_options(${FLOATABI})
                 else()
                     message(STATUS "ARM floating point arch not auto-detected")
                 endif()
@@ -296,11 +294,9 @@ endif()
 
 # Apply warning compiler flags
 if(WITH_MAINTAINER_WARNINGS)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNFLAGS} ${WARNFLAGS_MAINTAINER} ${WARNFLAGS_DISABLE}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNFLAGS} ${WARNFLAGS_MAINTAINER} ${WARNFLAGS_DISABLE}")
+    add_compile_options(${WARNFLAGS} ${WARNFLAGS_MAINTAINER} ${WARNFLAGS_DISABLE})
 else()
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNFLAGS} ${WARNFLAGS_DISABLE}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNFLAGS} ${WARNFLAGS_DISABLE}")
+    add_compile_options(${WARNFLAGS} ${WARNFLAGS_DISABLE})
 endif()
 
 # Set code coverage compiler flags
@@ -311,8 +307,7 @@ endif()
 # Set native instruction set compiler flag
 if(WITH_NATIVE_INSTRUCTIONS AND DEFINED NATIVEFLAG)
     # Apply flag to all source files and compilation checks
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${NATIVEFLAG}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NATIVEFLAG}")
+    add_compile_options(${NATIVEFLAG})
 endif()
 
 #

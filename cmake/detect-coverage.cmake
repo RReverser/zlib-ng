@@ -13,8 +13,8 @@ macro(add_code_coverage)
     set(CMAKE_REQUIRED_LINK_OPTIONS)
 
     if(HAVE_COVERAGE)
-        set(CMAKE_C_FLAGS "-O0 ${CMAKE_C_FLAGS} -coverage")
-        set(CMAKE_CXX_FLAGS "-O0 ${CMAKE_CXX_FLAGS} -coverage")
+        add_compile_options(-O0 -coverage)
+
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage")
         set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -coverage")
     else()
@@ -29,8 +29,8 @@ macro(add_code_coverage)
         set(CMAKE_REQUIRED_LINK_OPTIONS)
 
         if(HAVE_TEST_COVERAGE)
-            set(CMAKE_C_FLAGS "-O0 ${CMAKE_C_FLAGS} -ftest-coverage -fprofile-arcs -fprofile-values")
-            set(CMAKE_CXX_FLAGS "-O0 ${CMAKE_CXX_FLAGS} -ftest-coverage -fprofile-arcs -fprofile-values")
+            add_compile_options(-O0 -ftest-coverage -fprofile-arcs -fprofile-values)
+
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov -fprofile-arcs")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lgcov -fprofile-arcs")
         else()
