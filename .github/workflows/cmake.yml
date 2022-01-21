@@ -15,6 +15,7 @@ jobs:
           - name: Ubuntu GCC
             os: ubuntu-latest
             compiler: gcc
+            linker: gcc
             cmake-args: -DWITH_SANITIZER=Address
             codecov: ubuntu_gcc
 
@@ -96,6 +97,7 @@ jobs:
           - name: Ubuntu GCC Compat No Opt
             os: ubuntu-latest
             compiler: gcc
+            linker: gcc
             cmake-args: -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Address
             codecov: ubuntu_gcc_compat_no_opt
             cflags: -DNOT_TWEAK_COMPILER
@@ -103,6 +105,7 @@ jobs:
           - name: Ubuntu GCC ARM SF
             os: ubuntu-latest
             compiler: arm-linux-gnueabi-gcc
+            linker: arm-linux-gnueabi-gcc
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DCMAKE_C_COMPILER_TARGET=arm-linux-gnueabi -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-arm-linux-gnueabi libc-dev-armel-cross
@@ -345,6 +348,7 @@ jobs:
           - name: Ubuntu Clang MSAN
             os: ubuntu-latest
             compiler: clang-11
+            linker: clang-11
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
             packages:  ninja-build llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
@@ -449,6 +453,7 @@ jobs:
         cmake ${{ matrix.build-src-dir || '.' }} ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=${{ matrix.build-config || 'Release' }} -DBUILD_SHARED_LIBS=OFF -DWITH_FUZZERS=ON -DWITH_CODE_COVERAGE=ON -DWITH_MAINTAINER_WARNINGS=ON
       env:
         CC: ${{ matrix.compiler }}
+        LD: ${{ matrix.linker }}
         CFLAGS: ${{ matrix.cflags }}
         LDFLAGS: ${{ matrix.ldflags }}
         CI: true
