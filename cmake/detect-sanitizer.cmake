@@ -14,7 +14,7 @@ macro(check_sanitizer_support known_checks supported_checks)
             set(compile_checks "${available_checks},${check}")
         endif()
 
-        set(CMAKE_REQUIRED_FLAGS "-fsanitize=${compile_checks}")
+        set(CMAKE_REQUIRED_FLAGS -fsanitize=${compile_checks})
 
         check_c_source_compiles("int main() { return 0; }" HAS_SANITIZER_${check}
             FAIL_REGEX "not supported|unrecognized command|unknown option")
@@ -121,11 +121,13 @@ macro(add_undefined_sanitizer)
     if(NOT ${supported_checks} STREQUAL "")
         message(STATUS "Undefined behavior sanitizer is enabled: ${supported_checks}")
         add_compile_options(-fsanitize=${supported_checks})
+        add_link_options(-fsanitize=${supported_checks})
 
         # Group sanitizer flag -fsanitize=undefined will automatically add alignment, even if
         # it is not in our sanitize flag list, so we need to explicitly disable alignment sanitizing.
         if(UNALIGNED_OK)
             add_compile_options(-fno-sanitize=alignment)
+            add_link_options(-fno-sanitize=alignment)
         endif()
     else()
         message(STATUS "UNdefined behavior sanitizer is not supported")
