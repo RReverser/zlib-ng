@@ -14,9 +14,7 @@ macro(add_code_coverage)
 
     if(HAVE_COVERAGE)
         add_compile_options(-O0 -coverage)
-
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage")
-        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -coverage")
+        add_link_options(-coverage)
     else()
         # Some versions of GCC don't support -coverage shorthand
         if(CMAKE_VERSION VERSION_LESS 3.14)
@@ -30,9 +28,7 @@ macro(add_code_coverage)
 
         if(HAVE_TEST_COVERAGE)
             add_compile_options(-O0 -ftest-coverage -fprofile-arcs -fprofile-values)
-
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov -fprofile-arcs")
-            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lgcov -fprofile-arcs")
+            add_link_options(-lgcov -fprofile-arcs)
         else()
             message(WARNING "Compiler does not support code coverage")
         endif()
