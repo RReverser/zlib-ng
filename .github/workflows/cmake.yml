@@ -117,7 +117,7 @@ jobs:
           - name: Ubuntu GCC ARM SF
             os: ubuntu-latest
             compiler: arm-linux-gnueabi-gcc
-            linker: arm-linux-gnueabi-gcc
+            cxx-compiler: arm-linux-gnueabi-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DCMAKE_C_COMPILER_TARGET=arm-linux-gnueabi -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-arm-linux-gnueabi libc-dev-armel-cross
@@ -127,6 +127,7 @@ jobs:
           - name: Ubuntu GCC ARM SF Compat No Opt
             os: ubuntu-latest
             compiler: arm-linux-gnueabi-gcc
+            cxx-compiler: arm-linux-gnueabi-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DCMAKE_C_COMPILER_TARGET=arm-linux-gnueabi -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-arm-linux-gnueabi libc-dev-armel-cross
@@ -136,6 +137,7 @@ jobs:
           - name: Ubuntu GCC ARM HF
             os: ubuntu-latest
             compiler: arm-linux-gnueabihf-gcc
+            cxx-compiler: arm-linux-gnueabihf-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DCMAKE_C_COMPILER_TARGET=arm-linux-gnueabihf -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
@@ -145,6 +147,7 @@ jobs:
           - name: Ubuntu GCC ARM HF No ACLE
             os: ubuntu-latest
             compiler: arm-linux-gnueabihf-gcc
+            cxx-compiler: arm-linux-gnueabihf-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DCMAKE_C_COMPILER_TARGET=arm-linux-gnueabihf -DWITH_ACLE=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
@@ -154,6 +157,7 @@ jobs:
           - name: Ubuntu GCC ARM HF No NEON
             os: ubuntu-latest
             compiler: arm-linux-gnueabihf-gcc
+            cxx-compiler: arm-linux-gnueabihf-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DCMAKE_C_COMPILER_TARGET=arm-linux-gnueabihf -DWITH_NEON=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
@@ -172,6 +176,7 @@ jobs:
           - name: Ubuntu GCC AARCH64
             os: ubuntu-latest
             compiler: aarch64-linux-gnu-gcc
+            cxx-compiler: aarch64-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
@@ -190,6 +195,7 @@ jobs:
           - name: Ubuntu GCC AARCH64 No NEON
             os: ubuntu-latest
             compiler: aarch64-linux-gnu-gcc
+            cxx-compiler: aarch64-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_NEON=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
@@ -208,6 +214,7 @@ jobs:
           - name: Ubuntu GCC PPC
             os: ubuntu-latest
             compiler: powerpc-linux-gnu-gcc
+            cxx-compiler: powerpc-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc-linux-gnu libc-dev-powerpc-cross
@@ -218,6 +225,7 @@ jobs:
           - name: Ubuntu GCC PPC No Power8
             os: ubuntu-latest
             compiler: powerpc-linux-gnu-gcc
+            cxx-compiler: powerpc-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake -DWITH_POWER8=OFF
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc-linux-gnu libc-dev-powerpc-cross
@@ -227,6 +235,7 @@ jobs:
           - name: Ubuntu GCC PPC64
             os: ubuntu-latest
             compiler: powerpc64-linux-gnu-gcc
+            cxx-compiler: powerpc64-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64.cmake
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc64-linux-gnu libc-dev-ppc64-cross
@@ -237,6 +246,7 @@ jobs:
           - name: Ubuntu GCC PPC64LE
             os: ubuntu-latest
             compiler: powerpc64le-linux-gnu-gcc
+            cxx-compiler: powerpc64le-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64le.cmake
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc64le-linux-gnu libc-dev-ppc64el-cross
@@ -246,6 +256,7 @@ jobs:
           - name: Ubuntu GCC SPARC64
             os: ubuntu-latest
             compiler: sparc64-linux-gnu-gcc
+            cxx-compiler: sparc64-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-sparc64.cmake
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-sparc64-linux-gnu libc-dev-sparc64-cross
@@ -267,6 +278,7 @@ jobs:
           - name: Ubuntu GCC S390X No vectorized CRC32
             os: ubuntu-latest
             compiler: s390x-linux-gnu-gcc
+            cxx-compiler: s390x-linux-gnu-g++
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DWITH_CRC32_VX=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-s390x-linux-gnu libc-dev-s390x-cross
@@ -277,6 +289,7 @@ jobs:
           - name: Ubuntu GCC S390X DFLTCC
             os: z15
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             codecov: ubuntu_gcc_s390x
