@@ -6,7 +6,6 @@
 #ifndef CPU_FEATURES
 #define CPU_FEATURES
 
-#include "deflate.h"
 #include "crc32_fold.h"
 
 #ifdef X86_FEATURES
@@ -15,6 +14,7 @@
 
 extern void cpu_check_features();
 
+#ifdef DEFLATE_H_
 /* update_hash */
 extern uint32_t update_hash_c(deflate_state *const s, uint32_t h, uint32_t val);
 #ifdef X86_SSE42_CRC_HASH
@@ -53,6 +53,39 @@ void slide_hash_power8(deflate_state *s);
 #endif
 #ifdef X86_AVX2
 void slide_hash_avx2(deflate_state *s);
+#endif
+
+/* longest_match */
+extern uint32_t longest_match_c(deflate_state *const s, Pos cur_match);
+#ifdef UNALIGNED_OK
+extern uint32_t longest_match_unaligned_16(deflate_state *const s, Pos cur_match);
+extern uint32_t longest_match_unaligned_32(deflate_state *const s, Pos cur_match);
+#ifdef UNALIGNED64_OK
+extern uint32_t longest_match_unaligned_64(deflate_state *const s, Pos cur_match);
+#endif
+#ifdef X86_SSE42_CMP_STR
+extern uint32_t longest_match_unaligned_sse4(deflate_state *const s, Pos cur_match);
+#endif
+#if defined(X86_AVX2) && defined(HAVE_BUILTIN_CTZ)
+extern uint32_t longest_match_unaligned_avx2(deflate_state *const s, Pos cur_match);
+#endif
+#endif
+
+/* longest_match_slow */
+extern uint32_t longest_match_slow_c(deflate_state *const s, Pos cur_match);
+#ifdef UNALIGNED_OK
+extern uint32_t longest_match_slow_unaligned_16(deflate_state *const s, Pos cur_match);
+extern uint32_t longest_match_slow_unaligned_32(deflate_state *const s, Pos cur_match);
+#ifdef UNALIGNED64_OK
+extern uint32_t longest_match_slow_unaligned_64(deflate_state *const s, Pos cur_match);
+#endif
+#ifdef X86_SSE42_CMP_STR
+extern uint32_t longest_match_slow_unaligned_sse4(deflate_state *const s, Pos cur_match);
+#endif
+#if defined(X86_AVX2) && defined(HAVE_BUILTIN_CTZ)
+extern uint32_t longest_match_slow_unaligned_avx2(deflate_state *const s, Pos cur_match);
+#endif
+#endif
 #endif
 
 /* adler32 */
@@ -155,36 +188,7 @@ extern uint32_t compare256_unaligned_avx2(const unsigned char *src0, const unsig
 #endif
 #endif
 
-/* longest_match */
-extern uint32_t longest_match_c(deflate_state *const s, Pos cur_match);
-#ifdef UNALIGNED_OK
-extern uint32_t longest_match_unaligned_16(deflate_state *const s, Pos cur_match);
-extern uint32_t longest_match_unaligned_32(deflate_state *const s, Pos cur_match);
-#ifdef UNALIGNED64_OK
-extern uint32_t longest_match_unaligned_64(deflate_state *const s, Pos cur_match);
-#endif
-#ifdef X86_SSE42_CMP_STR
-extern uint32_t longest_match_unaligned_sse4(deflate_state *const s, Pos cur_match);
-#endif
-#if defined(X86_AVX2) && defined(HAVE_BUILTIN_CTZ)
-extern uint32_t longest_match_unaligned_avx2(deflate_state *const s, Pos cur_match);
-#endif
-#endif
-
-/* longest_match_slow */
-extern uint32_t longest_match_slow_c(deflate_state *const s, Pos cur_match);
-#ifdef UNALIGNED_OK
-extern uint32_t longest_match_slow_unaligned_16(deflate_state *const s, Pos cur_match);
-extern uint32_t longest_match_slow_unaligned_32(deflate_state *const s, Pos cur_match);
-#ifdef UNALIGNED64_OK
-extern uint32_t longest_match_slow_unaligned_64(deflate_state *const s, Pos cur_match);
-#endif
-#ifdef X86_SSE42_CMP_STR
-extern uint32_t longest_match_slow_unaligned_sse4(deflate_state *const s, Pos cur_match);
-#endif
-#if defined(X86_AVX2) && defined(HAVE_BUILTIN_CTZ)
-extern uint32_t longest_match_slow_unaligned_avx2(deflate_state *const s, Pos cur_match);
-#endif
+#ifdef DEFLATE_H_
 #endif
 
 #endif
