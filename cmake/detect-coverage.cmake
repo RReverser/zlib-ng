@@ -7,13 +7,13 @@ macro(add_code_coverage)
     endif()
 
     # Check for -coverage flag support for Clang/GCC
-    set(CMAKE_REQUIRED_LINK_OPTIONS -coverage)
-    check_c_compiler_flag(-coverage HAVE_COVERAGE)
+    set(CMAKE_REQUIRED_LINK_OPTIONS --coverage)
+    check_c_compiler_flag(--coverage HAVE_COVERAGE)
     set(CMAKE_REQUIRED_LINK_OPTIONS)
 
     if(HAVE_COVERAGE)
-        add_compile_options(-O0 -coverage)
-        add_link_options(-coverage)
+        add_compile_options(-O0 --coverage)
+        add_link_options(--coverage)
     else()
         # Some versions of GCC don't support -coverage shorthand
         set(CMAKE_REQUIRED_LINK_OPTIONS -lgcov -fprofile-arcs)
