@@ -11,7 +11,6 @@
 
 extern "C" {
 #  include "zbuild.h"
-#  include "zutil.h"
 #  include "zutil_p.h"
 #  include "cpu_features.h"
 }
