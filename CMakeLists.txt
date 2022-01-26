@@ -247,12 +247,6 @@ else()
     endif()
 endif()
 
-# Replace optimization level 3 added by default with level 2
-if(NOT MSVC AND NOT CMAKE_C_FLAGS MATCHES "([\\/\\-]O)3")
-    string(REGEX REPLACE "([\\/\\-]O)3" "\\12"
-        CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-endif()
-
 # Set architecture alignment requirements
 if(WITH_UNALIGNED)
     if((BASEARCH_ARM_FOUND AND NOT "${ARCH}" MATCHES "armv[2-7]") OR (BASEARCH_PPC_FOUND AND "${ARCH}" MATCHES "powerpc64le") OR BASEARCH_X86_FOUND)
@@ -304,6 +298,17 @@ endif()
 if(WITH_CODE_COVERAGE)
     add_code_coverage()
 endif()
+
+# Replace optimization level 3 added by default with level 2
+if(NOT WITH_CODE_COVERAGE AND NOT MSVC AND NOT CMAKE_C_FLAGS MATCHES "([\\/\\-]O)3")
+    string(REGEX REPLACE "([\\/\\-]O)3" "\\12" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+endif()
+
+#set_optimization_level(LEVEL 1 CONFIG Release)
+message(STATUS "CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
+message(STATUS "CMAKE_C_FLAGS_DEBUG: ${CMAKE_C_FLAGS_DEBUG}")
+message(STATUS "CMAKE_C_FLAGS_RELEASE: ${CMAKE_C_FLAGS_RELEASE}")
+message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
 # Set native instruction set compiler flag
 if(WITH_NATIVE_INSTRUCTIONS AND DEFINED NATIVEFLAG)
