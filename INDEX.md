@@ -5,7 +5,6 @@ Contents
 |:-----------------|:---------------------------------------------------------------|
 | arch/            | Architecture-specific code                                     |
 | doc/             | Documentation for formats and algorithms                       |
-| test/example.c   | Zlib usages examples for build testing                         |
 | test/minigzip.c  | Minimal gzip-like functionality for build testing              |
 | test/infcover.c  | Inflate code coverage for build testing                        |
 | win32/           | Shared library version resources for Windows                   |
