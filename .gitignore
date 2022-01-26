@@ -14,9 +14,6 @@
 *.gcov
 
 /benchmark_zlib
-/example
-/example64
-/examplesh
 /gtest_zlib
 /libz.so*
 /libz-ng.so*
@@ -71,7 +68,6 @@ a.out
 *.kdev4
 
 /Debug
-/example.dir
 /minigzip.dir
 /zlib.dir
 /zlibstatic.dir
