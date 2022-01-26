@@ -103,7 +103,7 @@ OBJS = $(OBJS) crc32_acle.obj insert_string_acle.obj adler32_neon.obj chunkset_n
 
 # targets
 all: $(STATICLIB) $(SHAREDLIB) $(IMPLIB) \
-     example.exe minigzip.exe example_d.exe minigzip_d.exe
+     minigzip.exe minigzip_d.exe
 
 !if "$(SYMBOL_PREFIX)" != ""
 zlib_name_mangling$(SUFFIX).h: zlib_name_mangling$(SUFFIX).h.in
@@ -136,18 +136,8 @@ $(SHAREDLIB): zconf $(TOP)/win32/$(DEFFILE) $(OBJS) $(RESFILE)
 	if exist $@.manifest \
 	  mt -nologo -manifest $@.manifest -outputresource:$@;2
 
-example.exe: example.obj gzlib2.obj gzread2.obj gzwrite2.obj $(STATICLIB)
-	$(LD) $(LDFLAGS) example.obj gzlib2.obj gzread2.obj gzwrite2.obj $(STATICLIB)
-	if exist $@.manifest \
-	  mt -nologo -manifest $@.manifest -outputresource:$@;1
-
 minigzip.exe: minigzip.obj gzlib2.obj gzread2.obj gzwrite2.obj $(STATICLIB)
 	$(LD) $(LDFLAGS) minigzip.obj gzlib2.obj gzread2.obj gzwrite2.obj $(STATICLIB)
-	if exist $@.manifest \
-	  mt -nologo -manifest $@.manifest -outputresource:$@;1
-
-example_d.exe: example.obj gzlib2.obj gzread2.obj gzwrite2.obj $(IMPLIB)
-	$(LD) $(LDFLAGS) -out:$@ example.obj gzlib2.obj gzread2.obj gzwrite2.obj $(IMPLIB)
 	if exist $@.manifest \
 	  mt -nologo -manifest $@.manifest -outputresource:$@;1
 
@@ -206,21 +196,16 @@ slide_hash.obj: $(SRCDIR)/slide_hash.c $(SRCDIR)/zbuild.h $(SRCDIR)/deflate.h
 slide_hash_neon.obj: $(SRCDIR)/arch/arm/slide_hash_neon.c $(SRCDIR)/zbuild.h $(SRCDIR)/deflate.h
 trees.obj: $(SRCDIR)/zbuild.h $(SRCDIR)/deflate.h $(SRCDIR)/trees_tbl.h
 zutil.obj: $(SRCDIR)/zbuild.h $(SRCDIR)/zutil.h $(SRCDIR)/zutil_p.h
-
-example.obj: $(TOP)/test/example.c $(TOP)/zbuild.h $(TOP)/zlib$(SUFFIX).h
-
 minigzip.obj: $(TOP)/test/minigzip.c $(TOP)/zbuild.h $(TOP)/zlib$(SUFFIX).h
 
 $(RESFILE): $(TOP)/win32/$(RCFILE)
 	$(RC) $(RCFLAGS) /fo$@ $(TOP)/win32/$(RCFILE)
 
 # testing
-test: example.exe minigzip.exe
-	example
+test: minigzip.exe
 	echo hello world | minigzip | minigzip -d
 
-testdll: example_d.exe minigzip_d.exe
-	example_d
+testdll: minigzip_d.exe
 	echo hello world | minigzip_d | minigzip_d -d
 
 
