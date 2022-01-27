@@ -129,6 +129,7 @@ jobs:
         sh test/abicheck.sh --refresh_if
       env:
         CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.cxx-compiler }}
         CFLAGS: ${{ matrix.cflags }}
         CHOST: ${{ matrix.chost }}
         CMAKE_ARGS: ${{ matrix.cmake-args }}
@@ -142,6 +143,7 @@ jobs:
         sh test/abicheck.sh --zlib-compat --refresh_if
       env:
         CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.cxx-compiler }}
         CFLAGS: ${{ matrix.cflags }}
         CHOST: ${{ matrix.chost }}
         CMAKE_ARGS: ${{ matrix.cmake-args }}
