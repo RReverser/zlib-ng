@@ -275,7 +275,7 @@ jobs:
           - name: Ubuntu MinGW i686
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mingw-i686.cmake
-            packages: wine32 gcc-mingw-w64 g++-mingw-w64
+            packages: wine32 gcc-mingw-w64-i686 g++-mingw-w64-i686
             codecov: ubuntu_gcc_mingw_i686
             # Limit parallel test jobs to prevent wine errors
             parallels-jobs: 1
@@ -283,7 +283,7 @@ jobs:
           - name: Ubuntu MinGW x86_64
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mingw-x86_64.cmake
-            packages: wine-stable gcc-mingw-w64
+            packages: wine-stable gcc-mingw-w64 g++-mingw-w64
             codecov: ubuntu_gcc_mingw_x86_64
              # Limit parallel test jobs to prevent wine errors
             parallels-jobs: 1
