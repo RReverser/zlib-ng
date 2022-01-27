@@ -18,8 +18,9 @@ jobs:
             compiler: gcc
             cxx-compiler: g++
             packages: gcc-multilib g++-multilib
-            cmake-args: -DCMAKE_C_FLAGS=-m32
+            cmake-args: -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
             cflags: -m32
+            cxxflags: -m32
             ldflags: -m32
 
           - name: Ubuntu GCC ARM HF
@@ -106,6 +107,7 @@ jobs:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.cxx-compiler }}
         CFLAGS: ${{ matrix.cflags }}
+        CXXFLAGS: ${{ matrix.cxxflags }}
         CHOST: ${{ matrix.chost }}
         CMAKE_ARGS: ${{ matrix.cmake-args }}
         CONFIGURE_ARGS: ${{ matrix.configure-args }}
@@ -131,6 +133,7 @@ jobs:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.cxx-compiler }}
         CFLAGS: ${{ matrix.cflags }}
+        CXXFLAGS: ${{ matrix.cxxflags }}
         CHOST: ${{ matrix.chost }}
         CMAKE_ARGS: ${{ matrix.cmake-args }}
         CONFIGURE_ARGS: ${{ matrix.configure-args }}
@@ -145,6 +148,7 @@ jobs:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.cxx-compiler }}
         CFLAGS: ${{ matrix.cflags }}
+        CXXFLAGS: ${{ matrix.cxxflags }}
         CHOST: ${{ matrix.chost }}
         CMAKE_ARGS: ${{ matrix.cmake-args }}
         CONFIGURE_ARGS: ${{ matrix.configure-args }}
