@@ -11,34 +11,40 @@ jobs:
           - name: Ubuntu 18.04 GCC
             os: ubuntu-18.04
             compiler: gcc
+            cxx-compiler: g++
 
           - name: Ubuntu GCC
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_SANITIZER=Address
             codecov: ubuntu_gcc
 
           - name: Ubuntu GCC Benchmark
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_BENCHMARKS=ON
             codecov: ubuntu_gcc_benchmark
 
           - name: Ubuntu GCC Symbol Prefix
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DZLIB_SYMBOL_PREFIX=zTest_
             codecov: ubuntu_gcc_sprefix
 
           - name: Ubuntu GCC Compat Symbol Prefix
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DZLIB_COMPAT=ON -DZLIB_SYMBOL_PREFIX=zTest_
             codecov: ubuntu_gcc_compat_sprefix
 
           - name: Ubuntu GCC OSB -O1 No Unaligned64
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_UNALIGNED=ON -DUNALIGNED64_OK=OFF -DWITH_SANITIZER=Undefined
             build-dir: ../build
             build-src-dir: ../zlib-ng
@@ -48,6 +54,7 @@ jobs:
           - name: Ubuntu GCC -O3 No Unaligned
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_UNALIGNED=OFF
             codecov: ubuntu_gcc_o3
             cflags: -O3
@@ -55,47 +62,55 @@ jobs:
           - name: Ubuntu GCC No CTZLL
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_OPTIM=OFF -DHAVE_BUILTIN_CTZLL=OFF
             codecov: ubuntu_gcc_no_ctzll
 
           - name: Ubuntu GCC No CTZ
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_OPTIM=OFF -DHAVE_BUILTIN_CTZLL=OFF -DHAVE_BUILTIN_CTZ=OFF
             codecov: ubuntu_gcc_no_ctz
 
           - name: Ubuntu GCC Link Zlib
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DZLIB_DUAL_LINK=ON
 
           - name: Ubuntu GCC No AVX2
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_AVX2=OFF -DWITH_SANITIZER=Undefined
             codecov: ubuntu_gcc_no_avx2
 
           - name: Ubuntu GCC No SSE2
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_SSE2=OFF -DWITH_SANITIZER=Undefined
             codecov: ubuntu_gcc_no_sse2
 
           - name: Ubuntu GCC No SSE4
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_SSE4=OFF -DWITH_SANITIZER=Undefined
             codecov: ubuntu_gcc_no_sse4
 
           - name: Ubuntu GCC No PCLMULQDQ
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_PCLMULQDQ=OFF -DWITH_SANITIZER=Undefined
             codecov: ubuntu_gcc_no_pclmulqdq
 
           - name: Ubuntu GCC Compat No Opt
             os: ubuntu-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Address
             codecov: ubuntu_gcc_compat_no_opt
             cflags: -DNOT_TWEAK_COMPILER
@@ -104,7 +119,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabi libc-dev-armel-cross
+            packages: qemu qemu-user gcc-arm-linux-gnueabi g++-arm-linux-gnueabi libc-dev-armel-cross
             qemu-run: qemu-arm
             codecov: ubuntu_gcc_armsf
 
@@ -112,7 +127,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabi libc-dev-armel-cross
+            packages: qemu qemu-user gcc-arm-linux-gnueabi g++-arm-linux-gnueabi libc-dev-armel-cross
             qemu-run: qemu-arm
             codecov: ubuntu_gcc_armsf_compat_no_opt
 
@@ -120,7 +135,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
             qemu-run: qemu-arm
             codecov: ubuntu_gcc_armhf
 
@@ -128,7 +143,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DWITH_ACLE=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
             qemu-run: qemu-arm
             codecov: ubuntu_gcc_armhf_no_acle
 
@@ -136,7 +151,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DWITH_NEON=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
             qemu-run: qemu-arm
             codecov: ubuntu_gcc_armhf_no_neon
 
@@ -144,7 +159,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
             qemu-run: qemu-arm
             codecov: ubuntu_gcc_armhf_compat_no_opt
 
@@ -152,7 +167,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
             qemu-run: qemu-aarch64
             codecov: ubuntu_gcc_aarch64
 
@@ -160,7 +175,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_ACLE=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
             qemu-run: qemu-aarch64
             codecov: ubuntu_gcc_aarch64_no_acle
 
@@ -168,7 +183,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_NEON=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
             qemu-run: qemu-aarch64
             codecov: ubuntu_gcc_aarch64_no_neon
 
@@ -176,7 +191,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
             qemu-run: qemu-aarch64
             codecov: ubuntu_gcc_aarch64_compat_no_opt
 
@@ -184,7 +199,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-powerpc-linux-gnu libc-dev-powerpc-cross
+            packages: qemu qemu-user gcc-powerpc-linux-gnu g++-powerpc-linux-gnu libc-dev-powerpc-cross
             qemu-run: qemu-ppc
             ldflags: -static
             codecov: ubuntu_gcc_ppc
@@ -193,7 +208,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake -DWITH_POWER8=OFF
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-powerpc-linux-gnu libc-dev-powerpc-cross
+            packages: qemu qemu-user gcc-powerpc-linux-gnu g++-powerpc-linux-gnu libc-dev-powerpc-cross
             qemu-run: qemu-ppc
             codecov: ubuntu_gcc_ppc_no_power8
 
@@ -201,7 +216,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64.cmake
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-powerpc64-linux-gnu libc-dev-ppc64-cross
+            packages: qemu qemu-user gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu libc-dev-ppc64-cross
             qemu-run: qemu-ppc64
             ldflags: -static
             codecov: ubuntu_gcc_ppc64
@@ -210,7 +225,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64le.cmake
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-powerpc64le-linux-gnu libc-dev-ppc64el-cross
+            packages: qemu qemu-user gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu libc-dev-ppc64el-cross
             qemu-run: qemu-ppc64le
             codecov: ubuntu_gcc_ppc64le
 
@@ -218,7 +233,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-sparc64.cmake
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-sparc64-linux-gnu libc-dev-sparc64-cross
+            packages: qemu qemu-user gcc-sparc64-linux-gnu g++-sparc64-linux-gnu libc-dev-sparc64-cross
             qemu-run: qemu-sparc64
             ldflags: -static
             codecov: ubuntu_gcc_sparc64
@@ -227,7 +242,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-s390x-linux-gnu libc-dev-s390x-cross
+            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
             qemu-run: qemu-s390x
             ldflags: -static
             codecov: ubuntu_gcc_s390x
@@ -236,7 +251,7 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DWITH_CRC32_VX=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-s390x-linux-gnu libc-dev-s390x-cross
+            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
             qemu-run: qemu-s390x
             ldflags: -static
             codecov: ubuntu_gcc_s390x
@@ -244,6 +259,7 @@ jobs:
           - name: Ubuntu GCC S390X DFLTCC
             os: z15
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
             codecov: ubuntu_gcc_s390x
@@ -251,6 +267,7 @@ jobs:
           - name: Ubuntu GCC S390X DFLTCC Compat
             os: z15
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -DZLIB_COMPAT=ON -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
             codecov: ubuntu_gcc_s390x
@@ -258,7 +275,7 @@ jobs:
           - name: Ubuntu MinGW i686
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mingw-i686.cmake
-            packages: wine32 gcc-mingw-w64
+            packages: wine32 gcc-mingw-w64 g++-mingw-w64
             codecov: ubuntu_gcc_mingw_i686
             # Limit parallel test jobs to prevent wine errors
             parallels-jobs: 1
@@ -274,11 +291,13 @@ jobs:
           - name: Ubuntu 18.04 Clang
             os: ubuntu-18.04
             compiler: clang-6.0
+            cxx-compiler: clang++-6.0
             packages: clang-6.0
 
           - name: Ubuntu Clang
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             packages: llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
             codecov: ubuntu_clang
@@ -286,6 +305,7 @@ jobs:
           - name: Ubuntu Clang Inflate Strict
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             cmake-args: -DWITH_INFLATE_STRICT=ON
             packages: llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
@@ -294,6 +314,7 @@ jobs:
           - name: Ubuntu Clang Inflate Allow Invalid Dist
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             cmake-args: -DWITH_INFLATE_ALLOW_INVALID_DIST=ON
             packages: llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
@@ -302,6 +323,7 @@ jobs:
           - name: Ubuntu Clang Reduced Memory
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             cmake-args: -DWITH_REDUCED_MEM=ON
             packages: llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
@@ -310,6 +332,7 @@ jobs:
           - name: Ubuntu Clang Memory Map
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             cflags: -DUSE_MMAP
             packages: llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
@@ -318,6 +341,7 @@ jobs:
           - name: Ubuntu Clang Debug
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             packages: llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
             codecov: ubuntu_clang_debug
@@ -326,6 +350,7 @@ jobs:
           - name: Ubuntu Clang MSAN
             os: ubuntu-latest
             compiler: clang-11
+            cxx-compiler: clang++-11
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
             packages:  ninja-build llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
@@ -355,24 +380,28 @@ jobs:
           - name: Windows GCC
             os: windows-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -G Ninja
             codecov: win64_gcc
 
           - name: Windows GCC Compat No Opt
             os: windows-latest
             compiler: gcc
+            cxx-compiler: g++
             cmake-args: -G Ninja -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF
             codecov: win64_gcc_compat_no_opt
 
           - name: macOS Clang
             os: macos-latest
             compiler: clang
+            cxx-compiler: clang++
             cmake-args: -DWITH_SANITIZER=Address
             codecov: macos_clang
 
           - name: macOS GCC
             os: macos-latest
             compiler: gcc-10
+            cxx-compiler: g++-10
             cmake-args: -DWITH_SANITIZER=Undefined
             packages: gcc@10
             gcov-exec: gcov-10
@@ -430,6 +459,7 @@ jobs:
         cmake ${{ matrix.build-src-dir || '.' }} ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=${{ matrix.build-config || 'Release' }} -DBUILD_SHARED_LIBS=OFF -DWITH_FUZZERS=ON -DWITH_CODE_COVERAGE=ON -DWITH_MAINTAINER_WARNINGS=ON
       env:
         CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.cxx-compiler }}
         CFLAGS: ${{ matrix.cflags }}
         LDFLAGS: ${{ matrix.ldflags }}
         CI: true
