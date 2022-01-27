@@ -4,15 +4,14 @@
  */
 
 #include <stdint.h>
-#include <stdint.h>
 #include <limits.h>
 
 extern "C" {
 #  include "zbuild.h"
 #  include "zutil.h"
 #  include "zutil_p.h"
-#  include "cpu_features.h"
 #  include "deflate.h"
+#  include "cpu_features.h"
 }
 
 #include <benchmark/benchmark.h>
@@ -30,13 +29,13 @@ public:
         l0 = (uint16_t *)zng_alloc(HASH_SIZE * sizeof(uint16_t));
 
         for (int32_t i = 0; i < HASH_SIZE; i++) {
-            l0[i] = rand();
+            l0[i] = (uint16_t)rand();
         }
 
         l1 = (uint16_t *)zng_alloc(MAX_RANDOM_INTS * sizeof(uint16_t));
 
         for (int32_t i = 0; i < MAX_RANDOM_INTS; i++) {
-            l1[i] = rand();
+            l1[i] = (uint16_t)rand();
         }
 
         deflate_state *s = (deflate_state*)malloc(sizeof(deflate_state));
