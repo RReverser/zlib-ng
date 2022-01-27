@@ -17,7 +17,7 @@ jobs:
             os: ubuntu-latest
             compiler: gcc
             cxx-compiler: g++
-            packages: gcc-multilib
+            packages: gcc-multilib g++-multilib
             cmake-args: -DCMAKE_C_FLAGS=-m32
             cflags: -m32
             ldflags: -m32
