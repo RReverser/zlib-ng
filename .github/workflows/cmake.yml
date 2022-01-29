@@ -102,7 +102,7 @@ jobs:
     - name: Compile source code
       run: |
         cd ${{ matrix.build-dir || '.' }}
-        cmake --build . --config ${{ matrix.build-config || 'Release' }}
+        cmake --build . --config ${{ matrix.build-config || 'Release' }} --verbose
 
     - name: Run test cases
       # Don't run tests on Windows ARM
