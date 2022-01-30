@@ -1293,7 +1293,7 @@ if(ZLIB_ENABLE_TESTS)
             add_test(NAME fuzzer_${FUZZER} COMMAND ${FUZZER_COMMAND})
         endforeach()
     endif()
-
+    #[[
     macro(test_minigzip name path)
         # Construct compression arguments for minigzip
         set(compress_args -k -c)
@@ -1354,7 +1354,7 @@ if(ZLIB_ENABLE_TESTS)
 
     test_minigzip("detect-text" "test/data/lcet10.txt" -A)
     test_minigzip("detect-binary" "test/data/paper-100k.pdf" -A)
-
+    #]]
     set(CVES CVE-2002-0059 CVE-2004-0797 CVE-2005-1849 CVE-2005-2096)
     foreach(CVE ${CVES})
         set(CVE_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:minigzip> -d)
