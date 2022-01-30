@@ -190,7 +190,6 @@ jobs:
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc-linux-gnu g++-powerpc-linux-gnu libc-dev-powerpc-cross
-            ldflags: -static
             codecov: ubuntu_gcc_ppc
 
           - name: Ubuntu GCC PPC No Power8
