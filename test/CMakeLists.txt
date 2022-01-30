@@ -32,7 +32,7 @@ target_include_directories(gtest_zlib PRIVATE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR})
 
-target_link_libraries(gtest_zlib zlibstatic gtest_main)
+target_link_libraries(gtest_zlib gtest_main)
 
 if(ZLIB_ENABLE_TESTS)
     add_test(NAME gtest_zlib
