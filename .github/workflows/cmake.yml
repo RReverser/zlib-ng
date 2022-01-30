@@ -14,7 +14,6 @@ jobs:
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc-linux-gnu g++-powerpc-linux-gnu libc-dev-powerpc-cross
             qemu-run: qemu-ppc
-            ldflags: -static
             codecov: ubuntu_gcc_ppc
 
           - name: Ubuntu GCC PPC No Power8
@@ -31,7 +30,6 @@ jobs:
             asan-options: detect_leaks=0
             packages: qemu qemu-user gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu libc-dev-ppc64-cross
             qemu-run: qemu-ppc64
-            ldflags: -static
             codecov: ubuntu_gcc_ppc64
 
           - name: Ubuntu GCC PPC64LE

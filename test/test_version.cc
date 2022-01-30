@@ -16,7 +16,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(version, basic) {
+TEST(dummy, test) {
     //static const char *my_version = PREFIX2(VERSION);
     EXPECT_EQ(1, 1);
     /*EXPECT_EQ(zVersion()[0], my_version[0]);
