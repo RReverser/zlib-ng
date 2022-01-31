@@ -343,7 +343,7 @@ static const adler32_test tests[] = {
    {0x7712aa45, (const uint8_t *)long_string, 5552, 0x7dc51be2},
 };
 
-class adler32 : public ::testing::TestWithParam<adler32_test> {
+class adler32_param : public ::testing::TestWithParam<adler32_test> {
 public:
     void Hash(adler32_test param, adler32_func adler32) {
         uint32_t adler = adler32((uint32_t)param.adler, param.buf, param.len);
@@ -351,10 +351,10 @@ public:
     }
 };
 
-INSTANTIATE_TEST_SUITE_P(adler32, adler32, testing::ValuesIn(tests));
+INSTANTIATE_TEST_SUITE_P(adler32x, adler32_param, testing::ValuesIn(tests));
 
 #define TEST_ADLER32(name, func, support_flag) \
-    TEST_P(adler32, name) { \
+    TEST_P(adler32_param, name) { \
         if (!support_flag) { \
             GTEST_SKIP(); \
             return; \
