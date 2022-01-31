@@ -66,8 +66,8 @@ jobs:
     - name: Compile C++ libraries with MSAN
       if: contains(matrix.name, 'MSAN')
       run: |
-        git clone --depth=1 https://github.com/llvm/llvm-project /usr/src/llvm-project
-        cd /usr/src/llvm-project
+        git clone --depth=1 https://github.com/llvm/llvm-project llvm-project
+        cd llvm-project
         mkdir build
         cd build
         cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
