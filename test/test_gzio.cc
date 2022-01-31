@@ -45,7 +45,7 @@ TEST(gzip, readwrite) {
     /* Flush compressed bytes to file */
     EXPECT_EQ(PREFIX(gzflush)(file, Z_SYNC_FLUSH), Z_OK);
     compr_len = (uint32_t)PREFIX(gzoffset)(file);
-    EXPECT_GE(compr_len, 0);
+    EXPECT_GE(compr_len, 0UL);
     PREFIX(gzclose)(file);
 
     /* Open gz file we previously wrote */
