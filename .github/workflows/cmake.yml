@@ -15,8 +15,8 @@ jobs:
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
             packages:  ninja-build llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
-            cxx-flags: -L./llvm-project/build/lib -I./llvm-project/build/include -I./llvm-project/build/include/c++/v1
-            ldflags: -Wl,-rpath,./llvm-project/build/lib
+            cxx-flags: -L../llvm-project/build/lib -I../llvm-project/build/include -I../llvm-project/build/include/c++/v1
+            ldflags: -Wl,-rpath,../llvm-project/build/lib
             cflags: -g3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
             codecov: ubuntu_clang_msan
 
