@@ -9,7 +9,7 @@ jobs:
       matrix:
         include:
           - name: Ubuntu Clang MSAN
-            os: ubuntu-latest
+            os: self-hosted
             compiler: clang-11
             cxx-compiler: clang++-11
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
