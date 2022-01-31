@@ -261,6 +261,7 @@ jobs:
             cxx-compiler: g++
             cmake-args: -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
+            ldflags: -static
             codecov: ubuntu_gcc_s390x
 
           - name: Ubuntu GCC S390X DFLTCC Compat
@@ -269,6 +270,7 @@ jobs:
             cxx-compiler: g++
             cmake-args: -DZLIB_COMPAT=ON -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Undefined
             asan-options: detect_leaks=0
+            ldflags: -static
             codecov: ubuntu_gcc_s390x
 
           - name: Ubuntu MinGW i686
