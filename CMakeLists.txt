@@ -1220,7 +1220,7 @@ if(ZLIB_ENABLE_TESTS)
             ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
             LIBRARY DESTINATION "${LIB_INSTALL_DIR}")
     endif()
-
+#[[
     set(SWITCHLEVELS_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:switchlevels>)
     add_executable(switchlevels test/switchlevels.c)
     configure_test_executable(switchlevels)
@@ -1435,6 +1435,7 @@ if(ZLIB_ENABLE_TESTS)
         -DTEST_NAME=GH-751-test-txt
         -DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/test/GH-751/test.txt
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test-compress.cmake)
+     ]]
 endif()
 
 add_feature_info(WITH_GZFILEOP WITH_GZFILEOP "Compile with support for gzFile related functions")
