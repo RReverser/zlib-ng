@@ -63,6 +63,7 @@ jobs:
         mkdir build
         cd build
         cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
+        cmake --build . -- cxx cxxabi
         cmake --build . --target install -- cxx cxxabi
 
     - name: Generate project files
