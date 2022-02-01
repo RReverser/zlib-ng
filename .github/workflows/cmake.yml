@@ -64,7 +64,7 @@ jobs:
         cd build
         cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
         cmake --build . -- cxx cxxabi
-        cmake --install -- cxx cxxabi
+        cmake --install . -- cxx cxxabi
 
     - name: Generate project files
       # Shared libraries turned off for qemu ppc* and sparc & reduce code coverage sources
