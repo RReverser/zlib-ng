@@ -39,20 +39,19 @@ target_include_directories(gtest_zlib PRIVATE
 #if(WITH_SANITIZER STREQUAL "Memory")
     # C++ targets must be linked against MSAN-linked C++ libraries
     macro(configure_cxx_msan target)
-        #target_link_directories(${target} PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
+        #[[target_link_directories(${target} PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
         target_include_directories(${target} PRIVATE
             $ENV{LLVM_BUILD_DIR}/include
-            $ENV{LLVM_BUILD_DIR}/include/c++/v1)
+            $ENV{LLVM_BUILD_DIR}/include/c++/v1)]]
         target_link_options(${target} PRIVATE
-            -L$ENV{LLVM_BUILD_DIR}/lib
             -stdlib=libc++
+            -L$ENV{LLVM_BUILD_DIR}/lib
             -lc++abi
             )
         target_compile_options(${target} PRIVATE
-            -isystem $ENV{LLVM_BUILD_DIR}/include
-            -isystem $ENV{LLVM_BUILD_DIR}/include/c++/v1
-            -Wl,-rpath,$ENV{LLVM_BUILD_DIR}/lib
-            -stdlib=libc++)
+            -stdlib=libc++
+            -I$ENV{LLVM_BUILD_DIR}/include
+            -I$ENV{LLVM_BUILD_DIR}/include/c++/v1)
     endmacro()
 
     configure_cxx_msan(zlib)
