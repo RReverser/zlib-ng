@@ -15,10 +15,8 @@ jobs:
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
             packages:  ninja-build llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
-            cxx-flags: -L$LLVM_BUILD_DIR/lib -I$LLVM_BUILD_DIR/include -I$LLVM_BUILD_DIR/include/c++/v1
-            ldflags: -Wl,-rpath,$LLVM_BUILD_DIR/lib
-            cflags: -g3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
-            codecov: ubuntu_clang_msan
+            cxx-flags: -stdlib=libc++ -L$LLVM_BUILD_DIR/lib -I$LLVM_BUILD_DIR/include -I$LLVM_BUILD_DIR/include/c++/v1
+            ldflags: -Wl,-rpath,$LLVM_BUILD_DIR/lib -static -lc++abi
 
     steps:
     - name: Checkout repository
@@ -63,7 +61,7 @@ jobs:
         mkdir build
         cd build
         cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
-        cmake --build . -- cxx cxxabi
+        cmake --build . --parallel 8 -- cxx cxxabi
         echo "LLVM_BUILD_DIR=`pwd`" >> $GITHUB_ENV
 
     - name: Generate project files
@@ -83,7 +81,7 @@ jobs:
     - name: Compile source code
       run: |
         cd ${{ matrix.build-dir || '.' }}
-        cmake --build . --config ${{ matrix.build-config || 'Release' }} --verbose
+        cmake --build . --config ${{ matrix.build-config || 'Release' }} --parallel 8 --verbose
 
 # cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
     - name: Run test cases
