@@ -10,7 +10,7 @@ jobs:
         include:
           - name: Ubuntu Clang MSAN
             os: ubuntu-latest
-            compiler: clang++-11
+            compiler: clang-11
             cxx-compiler: clang++-11
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
             packages:  ninja-build llvm-11-tools
