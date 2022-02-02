@@ -16,7 +16,7 @@ jobs:
             packages:  ninja-build llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
             cxx-flags: -stdlib=libc++ -L$LLVM_BUILD_DIR/lib -I$LLVM_BUILD_DIR/include -I$LLVM_BUILD_DIR/include/c++/v1
-            ldflags: -Wl,-rpath,$LLVM_BUILD_DIR/lib -static -lc++abi
+            ldflags: -stdlib=libc++ -Wl,-rpath,$LLVM_BUILD_DIR/lib -static -lc++abi
 
     steps:
     - name: Checkout repository
