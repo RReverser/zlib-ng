@@ -46,11 +46,13 @@ target_include_directories(gtest_zlib PRIVATE
         target_link_options(${target} PRIVATE
             -L$ENV{LLVM_BUILD_DIR}/lib
             -stdlib=libc++
-            -lc++abi)
+            -lc++abi
+            )
         target_compile_options(${target} PRIVATE
-            -stdlib=libc++
-            "-isystem $ENV{LLVM_BUILD_DIR}/include"
-            "-isystem $ENV{LLVM_BUILD_DIR}/include/c++/v1")
+            -isystem $ENV{LLVM_BUILD_DIR}/include
+            -isystem $ENV{LLVM_BUILD_DIR}/include/c++/v1
+            -Wl,-rpath,$ENV{LLVM_BUILD_DIR}/lib
+            -stdlib=libc++)
     endmacro()
     #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L$ENV{LLVM_BUILD_DIR}/lib -lc++abi")
 
