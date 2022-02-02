@@ -14,6 +14,9 @@ set(gtest_force_shared_crt ON CACHE BOOL
 set(gtest_disable_pthreads ON CACHE BOOL
     "Disable uses of pthreads in gtest." FORCE)
 
+#set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject")
+#set(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
+
 # Fetch Google test source code from official repository
 FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
@@ -35,6 +38,22 @@ add_executable(gtest_zlib ${TEST_SRCS})
 target_include_directories(gtest_zlib PRIVATE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR})
+
+target_link_directories(gtest PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
+target_link_directories(gtest_main PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
+target_link_directories(gtest_zlib PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
+
+target_compile_options(gtest PRIVATE -stdlib=libc++)
+target_compile_options(gtest_main PRIVATE -stdlib=libc++)
+target_compile_options(gtest_zlib PRIVATE -stdlib=libc++)
+
+target_link_options(gtest PRIVATE -stdlib=libc++ -lc++abi)
+target_link_options(gtest_main PRIVATE -stdlib=libc++ -lc++abi)
+target_link_options(gtest_zlib PRIVATE -stdlib=libc++ -lc++abi)
+
+target_include_directories(gtest PRIVATE $ENV{LLVM_BUILD_DIR}/include $ENV{LLVM_BUILD_DIR}/include/c++/v1)
+target_include_directories(gtest_main PRIVATE $ENV{LLVM_BUILD_DIR}/include $ENV{LLVM_BUILD_DIR}/include/c++/v1)
+target_include_directories(gtest_zlib PRIVATE $ENV{LLVM_BUILD_DIR}/include $ENV{LLVM_BUILD_DIR}/include/c++/v1)
 
 target_link_libraries(gtest_zlib zlibstatic gtest_main)
 
