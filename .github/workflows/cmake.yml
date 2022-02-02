@@ -58,8 +58,8 @@ jobs:
         cd llvm-project
         mkdir build
         cd build
-        cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libc;libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
-        cmake --build .
+        cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
+        cmake --build . -- cxx cxxabi
         echo "LLVM_BUILD_DIR=`pwd`" >> $GITHUB_ENV
 
     - name: Generate project files
@@ -81,7 +81,6 @@ jobs:
         cd ${{ matrix.build-dir || '.' }}
         cmake --build . --config ${{ matrix.build-config || 'Release' }} --verbose
 
-# cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
     - name: Run test cases
       # Don't run tests on Windows ARM
       if: runner.os != 'Windows' || contains(matrix.name, 'ARM') == false

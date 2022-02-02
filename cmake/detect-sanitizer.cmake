@@ -65,8 +65,10 @@ macro(add_memory_sanitizer)
     check_sanitizer_support("memory" supported_checks)
     if(NOT ${supported_checks} STREQUAL "")
         message(STATUS "Memory sanitizer is enabled: ${supported_checks}")
-        add_compile_options(-fsanitize=${supported_checks})
-        add_link_options(-fsanitize=${supported_checks})
+        add_compile_options(-fsanitize=${supported_checks}
+            -fsanitize-memory-track-origins -fno-omit-frame-pointer -g)
+        add_link_options(-fsanitize=${supported_checks}
+            -fsanitize-memory-track-origins -fno-omit-frame-pointer -g)
     else()
         message(STATUS "Memory sanitizer is not supported")
     endif()
