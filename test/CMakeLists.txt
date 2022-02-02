@@ -54,8 +54,8 @@ target_include_directories(gtest_zlib PRIVATE
             -Wl,-rpath,$ENV{LLVM_BUILD_DIR}/lib
             -stdlib=libc++)
     endmacro()
-    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L$ENV{LLVM_BUILD_DIR}/lib -lc++abi")
 
+    configure_cxx_msan(zlibstatic)
     configure_cxx_msan(gtest)
     configure_cxx_msan(gtest_main)
     configure_cxx_msan(gtest_zlib)
