@@ -39,17 +39,16 @@ target_include_directories(gtest_zlib PRIVATE
 #if(WITH_SANITIZER STREQUAL "Memory")
     # C++ targets must be linked against MSAN-linked C++ libraries
     macro(configure_cxx_msan target)
-        target_link_directories(${target} PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
+        #target_link_directories(${target} PRIVATE $ENV{LLVM_BUILD_DIR}/lib)
         target_include_directories(${target} PRIVATE
             $ENV{LLVM_BUILD_DIR}/include
             $ENV{LLVM_BUILD_DIR}/include/c++/v1)
+        target_link_options(${target} PRIVATE -L$ENV{LLVM_BUILD_DIR}/lib -stdlib=libc++ -lc++abi)
         target_compile_options(${target} PRIVATE
             "-isystem $ENV{LLVM_BUILD_DIR}/include"
             "-isystem $ENV{LLVM_BUILD_DIR}/include/c++/v1")
-        target_link_options(${target} PRIVATE -stdlib=libc++)
-
     endmacro()
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L$ENV{LLVM_BUILD_DIR}/lib -lc++abi")
+    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L$ENV{LLVM_BUILD_DIR}/lib -lc++abi")
 
     configure_cxx_msan(gtest)
     configure_cxx_msan(gtest_main)
