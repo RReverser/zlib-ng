@@ -16,7 +16,7 @@ jobs:
             packages:  ninja-build llvm-11-tools
             gcov-exec: llvm-cov-11 gcov
             cxx-flags: -L$LLVM_BUILD_DIR/lib -I$LLVM_BUILD_DIR/include -I$LLVM_BUILD_DIR/include/c++/v1
-            ldflags: -Wl,-rpath,../llvm-project/build/lib
+            ldflags: -Wl,-rpath,$LLVM_BUILD_DIR/lib
             cflags: -g3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins
             codecov: ubuntu_clang_msan
 
@@ -63,7 +63,7 @@ jobs:
         mkdir build
         cd build
         cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DLLVM_USE_SANITIZER=MemoryWithOrigins
-        cmake --build . cxx cxxabi
+        cmake --build . -- cxx cxxabi
         echo "LLVM_BUILD_DIR=`pwd`" >> $GITHUB_ENV
 
     - name: Generate project files
