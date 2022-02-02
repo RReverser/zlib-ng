@@ -15,7 +15,10 @@
 #include "test_shared.h"
 
 #include <gtest/gtest.h>
-
+TEST(FooTest, Foo) {
+  int uninitialized;
+  EXPECT_GT(uninitialized, 5);
+}
 TEST(compress, basic) {
     uint8_t compr[128], uncompr[128];
     z_size_t compr_len = sizeof(compr), uncompr_len = sizeof(uncompr);
