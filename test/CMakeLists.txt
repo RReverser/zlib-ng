@@ -55,7 +55,7 @@ target_include_directories(gtest_zlib PRIVATE
             -stdlib=libc++)
     endmacro()
 
-    configure_cxx_msan(zlibstatic)
+    configure_cxx_msan(zlib)
     configure_cxx_msan(gtest)
     configure_cxx_msan(gtest_main)
     configure_cxx_msan(gtest_zlib)
