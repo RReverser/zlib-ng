@@ -5,8 +5,8 @@ include(FetchContent)
 enable_language(CXX)
 
 # Google test requires at least C++11
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_EXTENSIONS OFF)
+#set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_EXTENSIONS OFF)
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL
@@ -45,6 +45,7 @@ target_include_directories(gtest_zlib PRIVATE
             $ENV{LLVM_BUILD_DIR}/include/c++/v1)
         target_link_options(${target} PRIVATE -L$ENV{LLVM_BUILD_DIR}/lib -stdlib=libc++ -lc++abi)
         target_compile_options(${target} PRIVATE
+            -stdlib=libc++
             -isystem $ENV{LLVM_BUILD_DIR}/include
             -isystem $ENV{LLVM_BUILD_DIR}/include/c++/v1)
     endmacro()
