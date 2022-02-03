@@ -52,6 +52,7 @@ target_include_directories(gtest_zlib PRIVATE
             )
         target_compile_options(${target} PRIVATE
             -stdlib=libc++
+            -fno-exceptions
             -I$ENV{LLVM_BUILD_DIR}/include
             -I$ENV{LLVM_BUILD_DIR}/include/c++/v1)
     endmacro()
