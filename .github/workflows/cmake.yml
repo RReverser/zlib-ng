@@ -58,9 +58,12 @@ jobs:
         cd llvm-project
         mkdir build
         cd build
-        cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_EH=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON -DLLVM_ENABLE_PROJECTS="libc;libcxx;libcxxabi;compiler-rt" -DLLVM_USE_SANITIZER=MemoryWithOrigins
+        cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libcxxabi;compiler-rt" -DLLVM_USE_SANITIZER=MemoryWithOrigins
         cmake --build . -- cxx cxxabi
         echo "LLVM_BUILD_DIR=`pwd`" >> $GITHUB_ENV
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.cxx-compiler }}
 
     - name: Generate project files
       # Shared libraries turned off for qemu ppc* and sparc & reduce code coverage sources
