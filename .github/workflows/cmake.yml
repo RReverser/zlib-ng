@@ -54,11 +54,11 @@ jobs:
     - name: Compile C++ libraries with MSAN
       if: contains(matrix.name, 'MSAN')
       run: |
-        git clone --depth=1 https://github.com/llvm/llvm-project --branch llvmorg-11.0.0
+        git clone --depth=1 https://github.com/llvm/llvm-project --single-branch --branch llvmorg-11.0.0
         cd llvm-project
         mkdir build
         cd build
-        cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libcxxabi;compiler-rt" -DLLVM_USE_SANITIZER=MemoryWithOrigins
+        cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_ENABLE_PROJECTS="libc;libcxx;libcxxabi;compiler-rt" -DLLVM_USE_SANITIZER=MemoryWithOrigins
         cmake --build . -- cxx cxxabi
         echo "LLVM_BUILD_DIR=`pwd`" >> $GITHUB_ENV
       env:
