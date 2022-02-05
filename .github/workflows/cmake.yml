@@ -123,14 +123,6 @@ jobs:
         directory: ${{ matrix.build-dir || '.' }}
         verbose: true
         fail_ci_if_error: true
-      env:
-        # Codecov does not yet support GitHub Actions
-        CODECOV_TOKEN_SECRET: "${{secrets.CODECOV_TOKEN}}"
-        CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN || 'e4fdf847-f541-4ab1-9d50-3d27e5913906' }}"
-        CODECOV_FLAGS: "${{ matrix.codecov }}"
-        CODECOV_NAME:  "${{ matrix.name }}"
-        CODECOV_EXEC:  "${{ matrix.gcov-exec || 'gcov' }}"
-        CODECOV_DIR:   "${{ matrix.build-dir || '.' }}"
 
     - name: Upload build errors
       uses: actions/upload-artifact@v2
