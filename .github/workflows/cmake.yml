@@ -67,11 +67,6 @@ jobs:
       env:
         HOMEBREW_NO_INSTALL_CLEANUP: 1
 
-    - name: Install codecov.io tools
-      if: matrix.codecov
-      run: |
-        python -u -m pip install --user codecov
-
     - name: Initialize Wine
       # Prevent parallel test jobs from initializing Wine at the same time
       if: contains(matrix.packages, 'wine')
@@ -110,7 +105,7 @@ jobs:
     - name: Generate coverage report
       if: matrix.codecov && (env.CODECOV_TOKEN_SECRET != '')
       run: |
-        python -u -m pip install --user gcovr pytest pytest-cov
+        python -u -m pip install --user gcovr
         gcovr --gcov-executable ${{ matrix.gcov-exec || 'gcov' }} --root ${{ matrix.build-dir || '.' }} --xml --verbose
 
     - name: Upload coverage report
@@ -133,4 +128,5 @@ jobs:
           ${{ matrix.build-dir || '.' }}/CMakeFiles/CMakeOutput.log
           ${{ matrix.build-dir || '.' }}/CMakeFiles/CMakeError.log
           ${{ matrix.build-dir || '.' }}/Testing/Temporary/*
+          ${{ matrix.build-dir || '.' }}/*.xml
         retention-days: 30

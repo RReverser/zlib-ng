@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "chrono": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp",
+        "variant": "cpp",
+        "crc32_p.h": "c",
+        "charconv": "c",
+        "xmemory": "c",
+        "x86_features.h": "c"
+    }
+}
