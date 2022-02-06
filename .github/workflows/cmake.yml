@@ -4,7 +4,7 @@ jobs:
   ci-cmake:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    if: ${{ matrix.if || 'true' }}
+    if: ${{ contains(matrix, 'if') && matrix.if || 'true' }}
     strategy:
       fail-fast: false
       matrix:
