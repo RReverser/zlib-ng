@@ -4,7 +4,7 @@ jobs:
   ci-cmake:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    if: ${{ contains(matrix, 'if') && matrix.if || 'true' }}
+    if: ${{ (contains(matrix, 'condition') && matrix.condition) || 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -227,7 +227,7 @@ jobs:
 
           # Shared runner for forked repositores
           - name: Ubuntu GCC S390X DFLTCC ASAN
-            if: github.repository != 'zlib-ng/zlib-ng'
+            condition: github.repository != 'zlib-ng/zlib-ng'
             os: ubuntu-latest
             compiler: s390x-linux-gnu-gcc
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Address
@@ -239,7 +239,7 @@ jobs:
 
           # Self-hosted runner
           - name: Ubuntu GCC S390X DFLTCC ASAN z15
-            if: github.repository == 'zlib-ng/zlib-ng'
+            condition: github.repository == 'zlib-ng/zlib-ng'
             os: z15
             compiler: gcc
             cmake-args: -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Address
@@ -248,7 +248,7 @@ jobs:
 
           # Shared runner for forked repositores
           - name: Ubuntu GCC S390X DFLTCC Compat UBSAN
-            if: github.repository != 'zlib-ng/zlib-ng'
+            condition: github.repository != 'zlib-ng/zlib-ng'
             os: ubuntu-latest
             compiler: s390x-linux-gnu-gcc
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DZLIB_COMPAT=ON -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Undefined
@@ -260,7 +260,7 @@ jobs:
 
           # Self-hosted runner
           - name: Ubuntu GCC S390X DFLTCC Compat UBSAN z15
-            if: github.repository == 'zlib-ng/zlib-ng'
+            condition: github.repository == 'zlib-ng/zlib-ng'
             os: z15
             compiler: gcc
             cmake-args: -DZLIB_COMPAT=ON -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Undefined
