@@ -436,7 +436,7 @@ jobs:
       if: matrix.codecov && (env.CODECOV_TOKEN_SECRET != '' || github.repository == 'zlib-ng/zlib-ng')
       run: |
         python3 -u -m pip install --user gcovr
-        python3 -m gcovr --gcov-executable "${{ matrix.gcov-exec || 'gcov' }}" --root "${{ matrix.build-src-dir || '.' }}" --xml --output coverage.xml --verbose
+        python3 -m gcovr --gcov-executable "${{ matrix.gcov-exec || 'gcov' }}" --root ${{ matrix.build-src-dir || '.' }} --xml --output coverage.xml --verbose
       env:
         CODECOV_TOKEN_SECRET: "${{secrets.CODECOV_TOKEN}}"
 
@@ -455,7 +455,6 @@ jobs:
 
     - name: Upload build errors
       uses: actions/upload-artifact@v2
-      if: failure()
       with:
         name: ${{ matrix.name }} (cmake)
         path: |
