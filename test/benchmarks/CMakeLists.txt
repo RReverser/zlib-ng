@@ -32,7 +32,7 @@ target_include_directories(benchmark_zlib PRIVATE
     ${CMAKE_BINARY_DIR}
     ${benchmark_SOURCE_DIR}/benchmark/include)
 
-target_link_libraries(benchmark_zlib zlibstatic benchmark::benchmark)
+target_link_libraries(benchmark_zlib zlibstatic${SUFFIX} benchmark::benchmark)
 if(WIN32)
     target_link_libraries(benchmark_zlib shlwapi)
 endif()

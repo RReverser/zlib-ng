@@ -127,9 +127,9 @@ set(ZLIB_ENABLE_TESTS OFF)
 add_subdirectory(${ZLIB_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/zlib EXCLUDE_FROM_ALL)
 
 if(NOT DEFINED BUILD_SHARED_LIBS OR NOT BUILD_SHARED_LIBS)
-    set(ZLIB_TARGET zlibstatic)
+    set(ZLIB_TARGET zlibstatic${SUFFIX})
 else()
-    set(ZLIB_TARGET zlib)
+    set(ZLIB_TARGET zlib${SUFFIX})
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${ZLIB_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/zlib)
