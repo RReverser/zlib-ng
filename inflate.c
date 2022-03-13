@@ -216,6 +216,8 @@ static int32_t updatewindow(PREFIX3(stream) *strm, const uint8_t *end, uint32_t 
 
     /* copy state->wsize or less output bytes into the circular window */
     if (copy >= state->wsize) {
+        if (INFLATE_NEED_CHECKSUM(strm) && (state->wrap & 4))
+            strm->adler = state->check = UPDATE(state->check, end - copy, copy);
         memcpy(state->window, end - state->wsize, state->wsize);
         state->wnext = 0;
         state->whave = state->wsize;
@@ -223,9 +225,13 @@ static int32_t updatewindow(PREFIX3(stream) *strm, const uint8_t *end, uint32_t 
         dist = state->wsize - state->wnext;
         if (dist > copy)
             dist = copy;
+        if (INFLATE_NEED_CHECKSUM(strm) && (state->wrap & 4))
+            strm->adler = state->check = UPDATE(state->check, end - copy, dist);
         memcpy(state->window + state->wnext, end - copy, dist);
         copy -= dist;
         if (copy) {
+            if (INFLATE_NEED_CHECKSUM(strm) && (state->wrap & 4))
+                strm->adler = state->check = UPDATE(state->check, end - copy, copy);
             memcpy(state->window, end - copy, copy);
             state->wnext = copy;
             state->whave = state->wsize;
@@ -1004,7 +1010,7 @@ int32_t Z_EXPORT PREFIX(inflate)(PREFIX3(stream) *strm, int32_t flush) {
     RESTORE();
     if (INFLATE_NEED_UPDATEWINDOW(strm) &&
             (state->wsize || (out != strm->avail_out && state->mode < BAD &&
-                 (state->mode < CHECK || flush != Z_FINISH)))) {
+                 (state->mode < CHECK)))) {
         if (updatewindow(strm, strm->next_out, out - strm->avail_out)) {
             state->mode = MEM;
             return Z_MEM_ERROR;
@@ -1015,8 +1021,6 @@ int32_t Z_EXPORT PREFIX(inflate)(PREFIX3(stream) *strm, int32_t flush) {
     strm->total_in += in;
     strm->total_out += out;
     state->total += out;
-    if (INFLATE_NEED_CHECKSUM(strm) && (state->wrap & 4) && out)
-        strm->adler = state->check = UPDATE(state->check, strm->next_out - out, out);
     strm->data_type = (int)state->bits + (state->last ? 64 : 0) +
                       (state->mode == TYPE ? 128 : 0) + (state->mode == LEN_ || state->mode == COPY_ ? 256 : 0);
     if (((in == 0 && out == 0) || flush == Z_FINISH) && ret == Z_OK)
