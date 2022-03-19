@@ -52,6 +52,7 @@ OBJS = \
 	chunkset_avx.obj \
 	chunkset_sse2.obj \
 	compare256.obj \
+	compare256_rle.obj \
 	compare256_avx2.obj \
 	compare256_sse2.obj \
 	compress.obj \

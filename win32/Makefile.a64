@@ -46,6 +46,7 @@ OBJS = \
 	arm_features.obj \
 	chunkset.obj \
 	compare256.obj \
+	compare256_rle.obj \
 	compress.obj \
 	cpu_features.obj \
 	crc32.obj \

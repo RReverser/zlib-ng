@@ -77,6 +77,7 @@ OBJZ = \
 	adler32.o \
 	chunkset.o \
 	compare256.o \
+	compare256_rle.o \
 	compress.o \
 	cpu_features.o \
 	crc32.o \
@@ -114,6 +115,7 @@ PIC_OBJZ = \
 	adler32.lo \
 	chunkset.lo \
 	compare256.lo \
+	compare256_rle.lo \
 	compress.lo \
 	cpu_features.lo \
 	crc32.lo \

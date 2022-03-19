@@ -917,6 +917,7 @@ set(ZLIB_SRCS
     adler32.c
     chunkset.c
     compare256.c
+    compare256_rle.c
     compress.c
     cpu_features.c
     crc32.c

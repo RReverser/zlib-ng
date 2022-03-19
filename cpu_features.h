@@ -134,7 +134,7 @@ typedef uint32_t (*compare256_rle_func)(const uint8_t *src0, const uint8_t *src1
 extern uint32_t compare256_rle_c(const uint8_t *src0, const uint8_t *src1);
 #ifdef UNALIGNED_OK
 extern uint32_t compare256_rle_unaligned_16(const uint8_t *src0, const uint8_t *src1);
-#if defined(HAVE_BUILTIN_CTZ)
+#ifdef HAVE_BUILTIN_CTZ
 extern uint32_t compare256_rle_unaligned_32(const uint8_t *src0, const uint8_t *src1);
 #endif
 #if defined(UNALIGNED64_OK) && defined(HAVE_BUILTIN_CTZLL)
