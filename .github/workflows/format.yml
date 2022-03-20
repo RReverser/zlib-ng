@@ -1,0 +1,13 @@
+name: CI Formatting
+on: [push, pull_request]
+
+jobs:
+  trailing:
+    name: Find Trailing Whitespace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find Trailing Whitespace
+        uses: raisedevs/find-trailing-whitespace@restrict-to-plaintext-only
