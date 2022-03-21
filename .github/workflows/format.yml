@@ -12,4 +12,7 @@ jobs:
       - name: Find Trailing Whitespace
         uses: nosborn/github-action-whitespace-linter@v1
         with:
-          files: *.c *.cc *.h
+          files:
+            - "*/**/.c"
+            - "*/**/.cc"
+            - "*/**/.h"
