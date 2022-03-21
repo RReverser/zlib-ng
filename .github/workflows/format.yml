@@ -10,4 +10,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Find Trailing Whitespace
-        uses: raisedevs/find-trailing-whitespace@restrict-to-plaintext-only
+        uses: nosborn/github-action-whitespace-linter@v1
+        with:
+          files: *.c *.cc *.h
