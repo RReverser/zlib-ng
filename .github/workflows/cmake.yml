@@ -497,6 +497,10 @@ jobs:
       if: matrix.codecov
       shell: bash
       run: |
+        gcc --version
+        /usr/bin/gcc --version
+        gcov --version
+        /usr/bin/gcov --version
         python3 -u -m pip install --user gcovr
         python3 -m gcovr --exclude-unreachable-branches --gcov-executable "${{ matrix.gcov-exec || 'gcov' }}" --root ${{ matrix.build-src-dir || '.' }} --xml --output coverage.xml -j 3 --verbose
 

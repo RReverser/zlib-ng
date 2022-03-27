@@ -88,6 +88,10 @@ jobs:
     - name: Generate coverage report
       if: matrix.codecov
       run: |
+        gcc --version
+        /usr/bin/gcc --version
+        gcov --version
+        /usr/bin/gcov --version
         python3 -u -m pip install --user gcovr
         python3 -m gcovr --exclude-unreachable-branches --gcov-executable "${{ matrix.gcov-exec || 'gcov' }}" --root . --xml --output coverage.xml -j 3 --verbose
 
