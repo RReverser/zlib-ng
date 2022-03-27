@@ -10,16 +10,16 @@ jobs:
         include:
           - name: Ubuntu GCC
             os: ubuntu-latest
-            compiler: gcc-10
-            packages: gcc-10
-            gcov-exec: gcov-10
+            compiler: gcc-11
+            packages: gcc-11
+            gcov-exec: gcov-11
             codecov: ubuntu_gcc_pigz
 
           - name: Ubuntu GCC Symbol Prefix
             os: ubuntu-latest
-            compiler: gcc-10
-            packages: gcc-10
-            gcov-exec: gcov-10
+            compiler: gcc-11
+            packages: gcc-11
+            gcov-exec: gcov-11
             codecov: ubuntu_gcc_pigz
             cmake-args: -DZLIB_SYMBOL_PREFIX=zTest_
 
@@ -66,6 +66,9 @@ jobs:
     - name: Install packages (Ubuntu)
       if: runner.os == 'Linux' && matrix.packages
       run: |
+        sudo apt-get update
+        sudo apt install build-essential manpages-dev software-properties-common
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.packages }}
 
