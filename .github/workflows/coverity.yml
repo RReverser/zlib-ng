@@ -13,7 +13,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Run scan
+    - name: Generate project files
+      run: ./configure
+
+    - name: Run coverity scan
       uses: vapier/coverity-scan-action@v1
       with:
         email: ${{ secrets.COVERITY_SCAN_EMAIL }}
