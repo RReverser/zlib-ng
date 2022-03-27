@@ -10,12 +10,16 @@ jobs:
         include:
           - name: Ubuntu GCC
             os: ubuntu-latest
-            compiler: gcc
+            compiler: gcc-10
+            packages: gcc-10
+            gcov-exec: gcov-10
             codecov: ubuntu_gcc_pigz
 
           - name: Ubuntu GCC Symbol Prefix
             os: ubuntu-latest
-            compiler: gcc
+            compiler: gcc-10
+            packages: gcc-10
+            gcov-exec: gcov-10
             codecov: ubuntu_gcc_pigz
             cmake-args: -DZLIB_SYMBOL_PREFIX=zTest_
 
