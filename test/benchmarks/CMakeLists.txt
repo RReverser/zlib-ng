@@ -52,25 +52,49 @@ if(WITH_BENCHMARK_APPS)
     find_package(PNG QUIET)
 
     if(NOT PNG_FOUND)
-        FetchContent_Declare(PNG
-            GIT_REPOSITORY https://github.com/glennrp/libpng.git)
-        FetchContent_MakeAvailable(PNG)
-        FetchContent_GetProperties(PNG)
-
-        if(NOT PNG_POPULATED)
-            FetchContent_Populate(PNG)
+        if(NOT ZLIB_COMPAT)
+            message(FATAL_ERROR "PNG library requires zlib compatibility")
         endif()
+
+        set(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
+        set(ZLIB_LIBRARY ZLIB::ZLIB)
+
+        add_library(ZLIB::ZLIB ALIAS zlib)
+        set(SKIP_INSTALL_ALL ON)
+
+        FetchContent_Declare(png
+            GIT_REPOSITORY https://github.com/glennrp/libpng.git)
+        FetchContent_MakeAvailable(png)
+        FetchContent_GetProperties(png)
+        if(NOT png_POPULATED)
+            FetchContent_Populate(png)
+        endif()
+
+        set(PNG_INCLUDE_DIR ${png_SOURCE_DIR} ${png_BINARY_DIR})
+        set(PNG_LIBRARIES png_static)
+
+        target_include_directories(png_static PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
     endif()
 
-    set(BENCH_APP_SRCS 
+    set(BENCH_APP_SRCS
         benchmark_png_encode.cc
         benchmark_png_decode.cc
         benchmark_main.cc
     )
 
     add_executable(benchmark_zlib_apps ${BENCH_APP_SRCS})
+    target_include_directories(benchmark_zlib_apps PRIVATE
+        ${CMAKE_SOURCE_DIR}
+        ${CMAKE_BINARY_DIR}
+        ${PNG_INCLUDE_DIR}
+        ${benchmark_SOURCE_DIR}/benchmark/include)
 
-    if(DEFINED BUILD_ALT_BENCH)
+    # We need the static png library if we're statically linking to zlib,
+    # otherwise it will resolve these things in the system provided dynamic
+    # libraries (likely linked to stock zlib)
+    target_link_libraries(benchmark_zlib_apps ${PNG_LIBRARIES} zlib benchmark::benchmark)
+
+    if(BUILD_ALT_BENCH)
         set(ZLIB_ALT_LIB "libz.a" CACHE FILEPATH "Optional alternative zlib implementation (defaults to stock zlib)")
         add_executable(benchmark_zlib_apps_alt ${BENCH_APP_SRCS})
         target_link_libraries(benchmark_zlib_apps_alt libpng.a ${ZLIB_ALT_LIB} benchmark::benchmark)
@@ -81,15 +105,4 @@ if(WITH_BENCHMARK_APPS)
             ${PNG_INCLUDE_DIR}
             ${benchmark_SOURCE_DIR}/benchmark/include)
     endif()
-
-    target_include_directories(benchmark_zlib_apps PRIVATE
-        ${CMAKE_SOURCE_DIR}
-        ${CMAKE_BINARY_DIR}
-        ${PNG_INCLUDE_DIR}
-        ${benchmark_SOURCE_DIR}/benchmark/include)
-
-    # We need the static png library if we're statically linking to zlib,
-    # otherwise it will resolve these things in the system provided dynamic
-    # libraries (likely linked to stock zlib)
-    target_link_libraries(benchmark_zlib_apps libpng.a zlibstatic benchmark::benchmark)
 endif()
