@@ -1,11 +1,11 @@
-#ifndef CRC32_COMB_TBL_H_
-#define CRC32_COMB_TBL_H_
+#ifndef CRC32_GF2_COMB_TBL_H_
+#define CRC32_GF2_COMB_TBL_H_
 
-/* crc32_comb_tbl.h -- zero operators table for CRC combine
- * Generated automatically by makecrct.c
+/* crc32_gf2_comb_tbl.h -- zero operators table for CRC combine
+ * Generated automatically by makecrct_gf2.c
  */
 
-static const uint32_t crc_comb[32][32] =
+static const uint32_t crc_gf2_comb[32][32] =
 {
   {
     0x77073096, 0xee0e612c, 0x076dc419, 0x0edb8832, 0x1db71064,
@@ -297,4 +297,4 @@ static const uint32_t crc_comb[32][32] =
   }
 };
 
-#endif /* CRC32_COMB_TBL_H_ */
+#endif /* CRC32_GF2_COMB_TBL_H_ */

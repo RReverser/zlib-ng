@@ -1,4 +1,4 @@
-/* crc32_comb.c -- compute the CRC-32 of a data stream
+/* crc32_gf2_comb.c -- compute the CRC-32 of a data stream
  * Copyright (C) 1995-2006, 2010, 2011, 2012, 2016, 2018 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  *
@@ -10,16 +10,12 @@
  */
 
 #include "zbuild.h"
-#include "deflate.h"
-#include "crc32_p.h"
-#include "crc32_comb_tbl.h"
-
-
-/* Local functions for crc concatenation */
-static uint32_t crc32_combine_(uint32_t crc1, uint32_t crc2, z_off64_t len2);
-static void crc32_combine_gen_(uint32_t op[GF2_DIM], z_off64_t len2);
+#include "zutil.h"
+#include "crc32_gf2_p.h"
+#include "crc32_gf2_comb_tbl.h"
 
 /* ========================================================================= */
+#if 0
 static uint32_t crc32_combine_(uint32_t crc1, uint32_t crc2, z_off64_t len2) {
     int n;
 
@@ -27,11 +23,12 @@ static uint32_t crc32_combine_(uint32_t crc1, uint32_t crc2, z_off64_t len2) {
         /* operator for 2^n zeros repeats every GF2_DIM n values */
         for (n = 0; len2; n = (n + 1) % GF2_DIM, len2 >>= 1)
             if (len2 & 1)
-                crc1 = gf2_matrix_times(crc_comb[n], crc1);
+                crc1 = gf2_matrix_times(crc_gf2_comb[n], crc1);
     return crc1 ^ crc2;
 }
 
 /* ========================================================================= */
+
 #ifdef ZLIB_COMPAT
 unsigned long Z_EXPORT PREFIX(crc32_combine)(unsigned long crc1, unsigned long crc2, z_off_t len2) {
     return (unsigned long)crc32_combine_((uint32_t)crc1, (uint32_t)crc2, len2);
@@ -69,7 +66,7 @@ static void crc32_combine_gen_(uint32_t op[GF2_DIM], z_off64_t len2) {
     for (;;) {
         if (len2 & 1) {
             for (j = 0; j < GF2_DIM; j++)
-                op[j] = crc_comb[i][j];
+                op[j] = crc_gf2_comb[i][j];
             break;
         }
         len2 >>= 1;
@@ -85,26 +82,33 @@ static void crc32_combine_gen_(uint32_t op[GF2_DIM], z_off64_t len2) {
             break;
         if (len2 & 1)
             for (j = 0; j < GF2_DIM; j++)
-                op[j] = gf2_matrix_times(crc_comb[i], op[j]);
+                op[j] = gf2_matrix_times(crc_gf2_comb[i], op[j]);
     }
 }
 
 /* ========================================================================= */
 
 #ifdef ZLIB_COMPAT
-void Z_EXPORT PREFIX(crc32_combine_gen)(uint32_t *op, z_off_t len2) {
-    crc32_combine_gen_(op, len2);
+unsigned long Z_EXPORT PREFIX(crc32_combine_gen)(z_off_t len2) {
+    crc32_combine_gen_(len2);
+    return 0;
 }
-void Z_EXPORT PREFIX4(crc32_combine_gen)(uint32_t *op, z_off64_t len2) {
-    crc32_combine_gen_(op, len2);
+unsigned long void Z_EXPORT PREFIX4(crc32_combine_gen)(z_off64_t len2) {
+    crc32_combine_gen_(len2);
+    return 0;
+}
+unsigned long Z_EXPORT PREFIX(crc32_combine_op)(unsigned long crc1, unsigned long crc2, const unsigned long op) {
+    gf2_matrix_times(op, crc1) ^ crc2;
+    return 0;
 }
 #else
-void Z_EXPORT PREFIX4(crc32_combine_gen)(uint32_t op[GF2_DIM], z_off64_t len2) {
-    crc32_combine_gen_(op, len2);
+uint32_t Z_EXPORT PREFIX(crc32_combine_gen)(z_off64_t len2) {
+    crc32_combine_gen_(len2);
+    return 0;
 }
-#endif
-
-/* ========================================================================= */
-uint32_t Z_EXPORT PREFIX(crc32_combine_op)(uint32_t crc1, uint32_t crc2, const uint32_t *op) {
+uint32_t Z_EXPORT PREFIX(crc32_combine_op)(uint32_t crc1, uint32_t crc2, const uint32_t op) {
     return gf2_matrix_times(op, crc1) ^ crc2;
 }
+#endif
+#endif
+/* ========================================================================= */

@@ -909,9 +909,13 @@ set(ZLIB_PRIVATE_HDRS
     adler32_p.h
     chunkset_tpl.h
     cpu_features.h
-    crc32_p.h
+    crc32_braid_p.h
+    crc32_braid_comb_p.h
+    crc32_braid_tbl.h
+    crc32_gf2_comb_tbl.h
+    crc32_gf2_p.h
+    crc32_gf2_tbl.h
     crc32_tbl.h
-    crc32_comb_tbl.h
     crc32_fold.h
     deflate.h
     deflate_p.h
@@ -936,8 +940,10 @@ set(ZLIB_SRCS
     compare256.c
     compress.c
     cpu_features.c
-    crc32.c
-    crc32_comb.c
+    crc32_braid.c
+    crc32_braid_comb.c
+    crc32_gf2.c
+    crc32_gf2_comb.c
     crc32_fold.c
     deflate.c
     deflate_fast.c
@@ -1249,13 +1255,18 @@ if(ZLIB_ENABLE_TESTS)
         -DIGNORE_LINE_ENDINGS=ON
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run-and-compare.cmake)
 
-    add_executable(makecrct tools/makecrct.c)
-    target_include_directories(makecrct PUBLIC
+    add_executable(makecrct_gf2 tools/makecrct_gf2.c)
+    target_include_directories(makecrct_gf2 PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR};${CMAKE_CURRENT_SOURCE_DIR}>"
         "$<INSTALL_INTERFACE:include>")
 
-    set(MAKECRCT_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:makecrct>)
-    add_test(NAME makecrct-crc32
+    add_executable(makecrct_braid tools/makecrct_braid.c)
+    target_include_directories(makecrct_braid PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR};${CMAKE_CURRENT_SOURCE_DIR}>"
+        "$<INSTALL_INTERFACE:include>")
+
+    set(MAKECRCT_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:makecrct_braid>)
+    add_test(NAME makecrct-braid
         COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=${MAKECRCT_COMMAND}"
         -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/Testing/Temporary/crc32_tbl._h
@@ -1263,12 +1274,30 @@ if(ZLIB_ENABLE_TESTS)
         -DIGNORE_LINE_ENDINGS=ON
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run-and-compare.cmake)
 
-    set(MAKECRCT_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:makecrct> -c)
-    add_test(NAME makecrct-crc32-combine
+    set(MAKECRCT_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:makecrct_braid> -b)
+    add_test(NAME makecrct-braid-tbl
         COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=${MAKECRCT_COMMAND}"
-        -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/Testing/Temporary/crc32_comb_tbl._h
-        -DCOMPARE=${CMAKE_CURRENT_SOURCE_DIR}/crc32_comb_tbl.h
+        -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/Testing/Temporary/crc32_braid_tbl._h
+        -DCOMPARE=${CMAKE_CURRENT_SOURCE_DIR}/crc32_braid_tbl.h
+        -DIGNORE_LINE_ENDINGS=ON
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run-and-compare.cmake)
+
+    set(MAKECRCT_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:makecrct_gf2>)
+    add_test(NAME makecrct-gf2
+        COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=${MAKECRCT_COMMAND}"
+        -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/Testing/Temporary/crc32_gf2_tbl._h
+        -DCOMPARE=${CMAKE_CURRENT_SOURCE_DIR}/crc32_gf2_tbl.h
+        -DIGNORE_LINE_ENDINGS=ON
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run-and-compare.cmake)
+
+    set(MAKECRCT_COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:makecrct_gf2> -c)
+    add_test(NAME makecrct-gf2-combine
+        COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=${MAKECRCT_COMMAND}"
+        -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/Testing/Temporary/crc32_gf2_comb_tbl._h
+        -DCOMPARE=${CMAKE_CURRENT_SOURCE_DIR}/crc32_gf2_comb_tbl.h
         -DIGNORE_LINE_ENDINGS=ON
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run-and-compare.cmake)
 

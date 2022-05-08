@@ -6,11 +6,11 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "zbuild.h"
-#include "deflate.h"
-#include "crc32_p.h"
+#include "zutil.h"
+#include "crc32_gf2_p.h"
 
-static uint32_t crc_table[8][256];
-static uint32_t crc_comb[GF2_DIM][GF2_DIM];
+static uint32_t crc_gf2_table[8][256];
+static uint32_t crc_gf2_comb[GF2_DIM][GF2_DIM];
 
 static void gf2_matrix_square(uint32_t *square, const uint32_t *mat);
 static void make_crc_table(void);
@@ -71,18 +71,18 @@ static void make_crc_table(void) {
         c = (uint32_t)n;
         for (k = 0; k < 8; k++)
             c = c & 1 ? poly ^ (c >> 1) : c >> 1;
-        crc_table[0][n] = c;
+        crc_gf2_table[0][n] = c;
     }
 
     /* generate crc for each value followed by one, two, and three zeros,
        and then the byte reversal of those as well as the first table */
     for (n = 0; n < 256; n++) {
-        c = crc_table[0][n];
-        crc_table[4][n] = ZSWAP32(c);
+        c = crc_gf2_table[0][n];
+        crc_gf2_table[4][n] = ZSWAP32(c);
         for (k = 1; k < 4; k++) {
-            c = crc_table[0][c & 0xff] ^ (c >> 8);
-            crc_table[k][n] = c;
-            crc_table[k + 4][n] = ZSWAP32(c);
+            c = crc_gf2_table[0][c & 0xff] ^ (c >> 8);
+            crc_gf2_table[k][n] = c;
+            crc_gf2_table[k + 4][n] = ZSWAP32(c);
         }
     }
 }
@@ -95,26 +95,30 @@ static void make_crc_combine_table(void) {
        first row adds the polynomial if the low bit is a 1, and the
        remaining rows shift the CRC right one bit */
     k = GF2_DIM - 3;
-    crc_comb[k][0] = 0xedb88320UL;      /* CRC-32 polynomial */
+    crc_gf2_comb[k][0] = 0xedb88320UL;      /* CRC-32 polynomial */
     uint32_t row = 1;
     for (n = 1; n < GF2_DIM; n++) {
-        crc_comb[k][n] = row;
+        crc_gf2_comb[k][n] = row;
         row <<= 1;
     }
     /* generate operators that apply 2, 4, and 8 zeros to a CRC, putting
        the last one, the operator for one zero byte, at the 0 position */
-    gf2_matrix_square(crc_comb[k + 1], crc_comb[k]);
-    gf2_matrix_square(crc_comb[k + 2], crc_comb[k + 1]);
-    gf2_matrix_square(crc_comb[0], crc_comb[k + 2]);
+    gf2_matrix_square(crc_gf2_comb[k + 1], crc_gf2_comb[k]);
+    gf2_matrix_square(crc_gf2_comb[k + 2], crc_gf2_comb[k + 1]);
+    gf2_matrix_square(crc_gf2_comb[0], crc_gf2_comb[k + 2]);
 
     /* generate operators for applying 2^n zero bytes to a CRC, filling out
        the remainder of the table -- the operators repeat after GF2_DIM
        values of n, so the table only needs GF2_DIM entries, regardless of
        the size of the length being processed */
     for (n = 1; n < k; n++)
-        gf2_matrix_square(crc_comb[n], crc_comb[n - 1]);
+        gf2_matrix_square(crc_gf2_comb[n], crc_gf2_comb[n - 1]);
 }
 
+/*
+   Write the 32-bit values in table[0..k-1] to out, five per line in
+   hexadecimal separated by commas.
+ */
 static void write_table(const uint32_t *table, int k) {
     int n;
 
@@ -126,45 +130,47 @@ static void write_table(const uint32_t *table, int k) {
 
 static void print_crc_table(void) {
     int k;
-    printf("#ifndef CRC32_TBL_H_\n");
-    printf("#define CRC32_TBL_H_\n\n");
-    printf("/* crc32_tbl.h -- tables for rapid CRC calculation\n");
-    printf(" * Generated automatically by makecrct.c\n */\n\n");
+    printf("#ifndef CRC32_GF2_TBL_H_\n");
+    printf("#define CRC32_GF2_TBL_H_\n\n");
+    printf("/* crc32_gf2_tbl.h -- tables for rapid CRC calculation\n");
+    printf(" * Generated automatically by makecrct_gf2.c\n */\n\n");
 
     /* print CRC table */
-    printf("static const uint32_t ");
-    printf("crc_table[8][256] =\n{\n  {\n");
-    write_table(crc_table[0], 256);
+    printf("static const uint32_t crc_gf2_table[8][256] =\n{\n");
+    printf("  {\n");
+    write_table(crc_gf2_table[0], 256);
     for (k = 1; k < 8; k++) {
         printf("  },\n  {\n");
-        write_table(crc_table[k], 256);
+        write_table(crc_gf2_table[k], 256);
     }
-    printf("  }\n};\n\n");
+    printf("  }\n");
+    printf("};\n\n");
 
-    printf("#endif /* CRC32_TBL_H_ */\n");
+    printf("#endif /* CRC32_GF2_TBL_H_ */\n");
 }
 
 static void print_crc_combine_table(void) {
     int k;
-    printf("#ifndef CRC32_COMB_TBL_H_\n");
-    printf("#define CRC32_COMB_TBL_H_\n\n");
-    printf("/* crc32_comb_tbl.h -- zero operators table for CRC combine\n");
-    printf(" * Generated automatically by makecrct.c\n */\n\n");
+    printf("#ifndef CRC32_GF2_COMB_TBL_H_\n");
+    printf("#define CRC32_GF2_COMB_TBL_H_\n\n");
+    printf("/* crc32_gf2_comb_tbl.h -- zero operators table for CRC combine\n");
+    printf(" * Generated automatically by makecrct_gf2.c\n */\n\n");
 
     /* print zero operator table */
-    printf("static const uint32_t ");
-    printf("crc_comb[%d][%d] =\n{\n  {\n", GF2_DIM, GF2_DIM);
-    write_table(crc_comb[0], GF2_DIM);
+    printf("static const uint32_t crc_gf2_comb[%d][%d] =\n{\n", GF2_DIM, GF2_DIM);
+    printf("  {\n");
+    write_table(crc_gf2_comb[0], GF2_DIM);
     for (k = 1; k < GF2_DIM; k++) {
         printf("  },\n  {\n");
-        write_table(crc_comb[k], GF2_DIM);
+        write_table(crc_gf2_comb[k], GF2_DIM);
     }
-    printf("  }\n};\n\n");
+    printf("  }\n");
+    printf("};\n\n");
 
-    printf("#endif /* CRC32_COMB_TBL_H_ */\n");
+    printf("#endif /* CRC32_GF2_COMB_TBL_H_ */\n");
 }
 
-// The output of this application can be piped out to recreate crc32.h
+// The output of this application can be piped out to recreate crc32 tables
 int main(int argc, char *argv[]) {
     if (argc > 1 && strcmp(argv[1], "-c") == 0) {
         make_crc_combine_table();

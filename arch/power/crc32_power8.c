@@ -42,7 +42,7 @@
 
 static unsigned int crc32_align(unsigned int crc, const unsigned char *p, unsigned long len) {
     while (len--)
-        crc = crc_table[0][(crc ^ *p++) & 0xff] ^ (crc >> 8);
+        crc = crc_table[(crc ^ *p++) & 0xff] ^ (crc >> 8);
     return crc;
 }
 

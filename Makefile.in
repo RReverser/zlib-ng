@@ -79,8 +79,10 @@ OBJZ = \
 	compare256.o \
 	compress.o \
 	cpu_features.o \
-	crc32.o \
-	crc32_comb.o \
+	crc32_braid.o \
+	crc32_braid_comb.o \
+	crc32_gf2.o \
+	crc32_gf2_comb.o \
 	crc32_fold.o \
 	deflate.o \
 	deflate_fast.o \
@@ -116,8 +118,10 @@ PIC_OBJZ = \
 	compare256.lo \
 	compress.lo \
 	cpu_features.lo \
-	crc32.lo \
-	crc32_comb.lo \
+	crc32_braid.lo \
+	crc32_braid_comb.lo \
+	crc32_gf2.lo \
+	crc32_gf2_comb.lo \
 	crc32_fold.lo \
 	deflate.lo \
 	deflate_fast.lo \
@@ -154,7 +158,7 @@ PIC_OBJS = $(PIC_OBJC)
 
 all: static shared
 
-static: example$(EXE) minigzip$(EXE) makefixed$(EXE) maketrees$(EXE) makecrct$(EXE)
+static: example$(EXE) minigzip$(EXE) makefixed$(EXE) maketrees$(EXE) makecrct_braid$(EXE) makecrct_gf2$(EXE)
 
 shared: examplesh$(EXE) minigzipsh$(EXE)
 
@@ -207,8 +211,11 @@ makefixed.o:
 maketrees.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/maketrees.c
 
-makecrct.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/makecrct.c
+makecrct_braid.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/makecrct_braid.c
+
+makecrct_gf2.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/makecrct_gf2.c
 
 zlibrc.o: win32/zlib$(SUFFIX)1.rc
 	$(RC) $(RCFLAGS) -o $@ win32/zlib$(SUFFIX)1.rc
@@ -289,8 +296,14 @@ ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-makecrct$(EXE): makecrct.o $(OBJG) $(STATICLIB)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makecrct.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+makecrct_braid$(EXE): makecrct_braid.o $(OBJG) $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makecrct_braid.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+ifneq ($(STRIP),)
+	$(STRIP) $@
+endif
+
+makecrct_gf2$(EXE): makecrct_gf2.o $(OBJG) $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makecrct_gf2.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
@@ -358,7 +371,7 @@ clean:
 	@if [ -f test/Makefile ]; then $(MAKE) -C test clean; fi
 	rm -f *.o *.lo *~ \
 	   example$(EXE) minigzip$(EXE) minigzipsh$(EXE) \
-	   infcover makefixed$(EXE) maketrees$(EXE) makecrct$(EXE) \
+	   infcover makefixed$(EXE) maketrees$(EXE) makecrct_braid$(EXE) makecrct_gf2$(EXE) \
 	   $(STATICLIB) $(IMPORTLIB) $(SHAREDLIB) $(SHAREDLIBV) $(SHAREDLIBM) \
 	   foo.gz so_locations \
 	   _match.s maketree

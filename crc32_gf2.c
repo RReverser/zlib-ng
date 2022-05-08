@@ -13,11 +13,12 @@
 #include "zendian.h"
 #include "deflate.h"
 #include "functable.h"
-#include "crc32_tbl.h"
+#include "crc32_gf2_tbl.h"
 
 /* ========================================================================= */
+#if 0
 const uint32_t * Z_EXPORT PREFIX(get_crc_table)(void) {
-    return (const uint32_t *)crc_table;
+    return (const uint32_t *)crc_gf2_table;
 }
 
 #ifdef ZLIB_COMPAT
@@ -43,7 +44,7 @@ uint32_t Z_EXPORT PREFIX(crc32)(uint32_t crc, const unsigned char *buf, uint32_t
     return PREFIX(crc32_z)(crc, buf, len);
 }
 #endif
-
+#endif
 /* ========================================================================= */
 
 /*
@@ -60,26 +61,26 @@ uint32_t Z_EXPORT PREFIX(crc32)(uint32_t crc, const unsigned char *buf, uint32_t
 
 /* ========================================================================= */
 #if BYTE_ORDER == LITTLE_ENDIAN
-#define DOSWAP(crc) (crc)
-#define DO1 \
-    c = crc_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8)
-#define DO4 c ^= *buf4++; \
-    c = crc_table[3][c & 0xff] ^ crc_table[2][(c >> 8) & 0xff] ^ \
-        crc_table[1][(c >> 16) & 0xff] ^ crc_table[0][c >> 24]
+#  define DOSWAP(crc) (crc)
+#  define DO1 \
+    c = crc_gf2_table[0][(c ^ *buf++) & 0xff] ^ (c >> 8)
+#  define DO4 c ^= *buf4++; \
+    c = crc_gf2_table[3][c & 0xff] ^ crc_gf2_table[2][(c >> 8) & 0xff] ^ \
+        crc_gf2_table[1][(c >> 16) & 0xff] ^ crc_gf2_table[0][c >> 24]
 #elif BYTE_ORDER == BIG_ENDIAN
-#define DOSWAP(crc) ZSWAP32(crc)
-#define DO1 \
-    c = crc_table[4][(c >> 24) ^ *buf++] ^ (c << 8)
-#define DO4 c ^= *buf4++; \
-    c = crc_table[4][c & 0xff] ^ crc_table[5][(c >> 8) & 0xff] ^ \
-        crc_table[6][(c >> 16) & 0xff] ^ crc_table[7][c >> 24]
+#  define DOSWAP(crc) ZSWAP32(crc)
+#  define DO1 \
+    c = crc_gf2_table[4][(c >> 24) ^ *buf++] ^ (c << 8)
+#  define DO4 c ^= *buf4++; \
+    c = crc_gf2_table[4][c & 0xff] ^ crc_gf2_table[5][(c >> 8) & 0xff] ^ \
+        crc_gf2_table[6][(c >> 16) & 0xff] ^ crc_gf2_table[7][c >> 24]
 #else
 #  error "No endian defined"
 #endif
 #define DO32 DO4; DO4; DO4; DO4; DO4; DO4; DO4; DO4
 
 /* ========================================================================= */
-Z_INTERNAL uint32_t crc32_byfour(uint32_t crc, const unsigned char *buf, uint64_t len) {
+Z_INTERNAL uint32_t crc32_gf2_byfour(uint32_t crc, const unsigned char *buf, uint64_t len) {
     Z_REGISTER uint32_t c;
     Z_REGISTER const uint32_t *buf4;
 
