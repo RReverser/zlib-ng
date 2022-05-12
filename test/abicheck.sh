@@ -72,8 +72,8 @@ then
   ABI_GIT_COMMIT=v1.2.12
 else
   # Reference is the tag for zlib-ng 2.0
-  ABI_GIT_REPO=https://github.com/zlib-ng/zlib-ng.git
-  ABI_GIT_COMMIT=2.0.0
+  ABI_GIT_REPO=https://github.com/nmoinvaz/zlib-ng.git
+  ABI_GIT_COMMIT=b496a38e9bf5edb799a837467f7eaef563dc2025
 fi
 # FIXME: even when using a tag, check the hash.
 
