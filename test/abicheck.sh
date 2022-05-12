@@ -69,7 +69,7 @@ if test "$suffix" = ""
 then
   # Reference is zlib 1.2.12
   ABI_GIT_REPO=https://github.com/madler/zlib.git
-  ABI_GIT_COMMIT=v1.2.12
+  ABI_GIT_COMMIT=ec3df00224d4b396e2ac6586ab5d25f673caa4c2
 else
   # Reference is the tag for zlib-ng 2.0
   ABI_GIT_REPO=https://github.com/nmoinvaz/zlib-ng.git
