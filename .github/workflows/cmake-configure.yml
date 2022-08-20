@@ -1,0 +1,37 @@
+name: Configure (wasm32)
+on: [push, pull_request]
+env:
+  TERM: xterm-256color
+  GTEST_COLOR: 1
+jobs:
+  configure-emscripten:
+    name: Emscripten
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Emscripten
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        ./emsdk install latest
+        ./emsdk activate latest
+        source ./emsdk_env.sh
+        echo "${PATH}" > $GITHUB_PATH
+        echo "EMSDK=${EMSDK}" >> $GITHUB_ENV
+        echo "EM_CONFIG=${EM_CONFIG}" >> $GITHUB_ENV
+        echo "EM_CACHE=${EM_CACHE}" >> $GITHUB_ENV
+        echo "EMSDK_NODE=${EMSDK_NODE}" >> $GITHUB_ENV
+
+    - name: Generate project files
+      run: emconfigure ./configure --warn --zlib-compat --static
+      env:
+        CHOST: wasm32
+        CFLAGS: -static
+        LDFLAGS: -static
+        CI: true
+
+    - name: Compile source code
+      run: make -j2
