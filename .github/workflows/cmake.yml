@@ -341,10 +341,10 @@ jobs:
           #   packages:  ninja-build llvm-11-tools
           #   gcov-exec: llvm-cov-11 gcov
 
-          - name: Ubuntu Emscripten WASM32
-            os: ubuntu-latest
-            chost: wasm32
-            cmake-args: -DCMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_C_COMPILER_TARGET=wasm32 -DCMAKE_CROSSCOMPILING_EMULATOR=${EMSDK_NODE} -DZLIB_COMPAT=ON
+          # - name: Ubuntu Emscripten WASM32
+          #   os: ubuntu-latest
+          #   chost: wasm32
+          #   cmake-args: -DCMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_C_COMPILER_TARGET=wasm32 -DCMAKE_CROSSCOMPILING_EMULATOR=${EMSDK_NODE} -DZLIB_COMPAT=ON
 
           # - name: Windows MSVC Win32
           #   os: windows-latest
