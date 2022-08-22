@@ -11,10 +11,10 @@ LIBNAME=
 TEST_LDFLAGS=-L.. ../$(LIBNAME).a
 
 EMU_RUN=
-EXE=.js
-all: oldtests ghtests
 
-oldtests: #set by ../configure
+all: alltests
+
+alltests: #set by ../configure
 check_cross_dep:
 ifneq (,$(findstring qemu,$(EMU_RUN)))
 	QEMU_VER:=$(shell command -v $(EMU_RUN) --version 2> /dev/null)
