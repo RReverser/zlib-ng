@@ -290,89 +290,6 @@ Z_INTERNAL uint32_t chunksize_stub(void) {
     return functable.chunksize();
 }
 
-Z_INTERNAL uint8_t* chunkcopy_stub(uint8_t *out, uint8_t const *from, unsigned len) {
-    // Initialize default
-    functable.chunkcopy = &chunkcopy_c;
-
-#ifdef X86_SSE2_CHUNKSET
-# if !defined(__x86_64__) && !defined(_M_X64) && !defined(X86_NOCHECK_SSE2)
-    if (x86_cpu_has_sse2)
-# endif
-        functable.chunkcopy = &chunkcopy_sse2;
-#endif
-#ifdef X86_AVX_CHUNKSET
-    if (x86_cpu_has_avx2)
-        functable.chunkcopy = &chunkcopy_avx;
-#endif
-#ifdef ARM_NEON_CHUNKSET
-    if (arm_cpu_has_neon)
-        functable.chunkcopy = &chunkcopy_neon;
-#endif
-#ifdef POWER8_VSX_CHUNKSET
-    if (power_cpu_has_arch_2_07)
-        functable.chunkcopy = &chunkcopy_power8;
-#endif
-
-    return functable.chunkcopy(out, from, len);
-}
-
-Z_INTERNAL uint8_t* chunkunroll_stub(uint8_t *out, unsigned *dist, unsigned *len) {
-    // Initialize default
-    functable.chunkunroll = &chunkunroll_c;
-
-#ifdef X86_SSE2_CHUNKSET
-# if !defined(__x86_64__) && !defined(_M_X64) && !defined(X86_NOCHECK_SSE2)
-    if (x86_cpu_has_sse2)
-# endif
-        functable.chunkunroll = &chunkunroll_sse2;
-#endif
-#ifdef X86_AVX_CHUNKSET
-    if (x86_cpu_has_avx2)
-        functable.chunkunroll = &chunkunroll_avx;
-#endif
-#ifdef ARM_NEON_CHUNKSET
-    if (arm_cpu_has_neon)
-        functable.chunkunroll = &chunkunroll_neon;
-#endif
-#ifdef POWER8_VSX_CHUNKSET
-    if (power_cpu_has_arch_2_07)
-        functable.chunkunroll = &chunkunroll_power8;
-#endif
-
-    return functable.chunkunroll(out, dist, len);
-}
-
-Z_INTERNAL uint8_t* chunkmemset_stub(uint8_t *out, unsigned dist, unsigned len) {
-    // Initialize default
-    functable.chunkmemset = &chunkmemset_c;
-
-#ifdef X86_SSE2_CHUNKSET
-# if !defined(__x86_64__) && !defined(_M_X64) && !defined(X86_NOCHECK_SSE2)
-    if (x86_cpu_has_sse2)
-# endif
-        functable.chunkmemset = &chunkmemset_sse2;
-#endif
-#if defined(X86_SSE41) && defined(X86_SSE2)
-    if (x86_cpu_has_sse41)
-        functable.chunkmemset = &chunkmemset_sse41;
-#endif
-#ifdef X86_AVX_CHUNKSET
-    if (x86_cpu_has_avx2)
-        functable.chunkmemset = &chunkmemset_avx;
-#endif
-#ifdef ARM_NEON_CHUNKSET
-    if (arm_cpu_has_neon)
-        functable.chunkmemset = &chunkmemset_neon;
-#endif
-#ifdef POWER8_VSX_CHUNKSET
-    if (power_cpu_has_arch_2_07)
-        functable.chunkmemset = &chunkmemset_power8;
-#endif
-
-
-    return functable.chunkmemset(out, dist, len);
-}
-
 Z_INTERNAL uint8_t* chunkmemset_safe_stub(uint8_t *out, unsigned dist, unsigned len, unsigned left) {
     // Initialize default
     functable.chunkmemset_safe = &chunkmemset_safe_c;
@@ -495,9 +412,6 @@ Z_INTERNAL Z_TLS struct functable_s functable = {
     crc32_fold_final_stub,
     compare256_stub,
     chunksize_stub,
-    chunkcopy_stub,
-    chunkunroll_stub,
-    chunkmemset_stub,
     chunkmemset_safe_stub,
     inflate_fast_stub,
     insert_string_stub,
