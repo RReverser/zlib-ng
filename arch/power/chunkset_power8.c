@@ -48,6 +48,13 @@ static inline void storechunk(uint8_t *out, chunk_t *chunk) {
 
 #include "chunkset_tpl.h"
 
+#undef CHUNKUNROLL
+#define CHUNKUNROLL      chunkcopy_power8_static
+#undef CHUNKMEMSET
+#define CHUNKMEMSET      chunkmemset_power8_static
+#undef CHUNKMEMSET_SAFE
+#define CHUNKMEMSET_SAFE chunkmemset_safe_power8_static
+
 #define INFLATE_FAST     inflate_fast_power8
 
 #include "inffast_tpl.h"

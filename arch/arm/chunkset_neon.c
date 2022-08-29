@@ -98,6 +98,15 @@ static inline chunk_t GET_CHUNK_MAG(uint8_t *buf, uint32_t *chunk_rem, uint32_t 
 
 #include "chunkset_tpl.h"
 
+#undef CHUNKCOPY
+#define CHUNKCOPY        chunkcopy_neon_static
+#undef CHUNKUNROLL
+#define CHUNKUNROLL      chunkunroll_neon_static
+#undef CHUNKMEMSET
+#define CHUNKMEMSET      chunkmemset_neon_static
+#undef CHUNKMEMSET_SAFE
+#define CHUNKMEMSET_SAFE chunkmemset_safe_neon_static
+
 #define INFLATE_FAST     inflate_fast_neon
 
 #include "inffast_tpl.h"
