@@ -132,8 +132,6 @@ static inline chunk_t GET_CHUNK_MAG(uint8_t *buf, uint32_t *chunk_rem, uint32_t 
 #define CHUNKCOPY        chunkcopy_avx_static
 #undef CHUNKUNROLL
 #define CHUNKUNROLL      chunkunroll_avx_static
-#undef CHUNKMEMSET
-#define CHUNKMEMSET      chunkmemset_avx_static
 #undef CHUNKMEMSET_SAFE
 #define CHUNKMEMSET_SAFE chunkmemset_safe_avx_static
 

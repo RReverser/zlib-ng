@@ -96,8 +96,6 @@ extern uint8_t* chunkunroll_sse2(uint8_t *out, unsigned *dist, unsigned *len);
 
 #include "chunkset_tpl.h"
 
-#undef CHUNKMEMSET
-#define CHUNKMEMSET      chunkmemset_sse41_static
 #undef CHUNKMEMSET_SAFE
 #define CHUNKMEMSET_SAFE chunkmemset_safe_sse41_static
 

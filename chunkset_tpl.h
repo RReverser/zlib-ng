@@ -8,10 +8,6 @@
 #define MAKE_CSTATIC(name, suffix) name ## suffix
 #define CSTATIC(name)              MAKE_CSTATIC(name, _static)
 
-#if CHUNK_SIZE == 32 && defined(X86_SSE41) && defined(X86_SSE2)
-extern uint8_t* chunkmemset_sse41(uint8_t *out, unsigned dist, unsigned len);
-#endif
-
 /* Returns the chunk size */
 Z_INTERNAL uint32_t CHUNKSIZE(void) {
     return sizeof(chunk_t);
@@ -102,16 +98,10 @@ static inline chunk_t GET_CHUNK_MAG(uint8_t *buf, uint32_t *chunk_rem, uint32_t 
 
 /* Copy DIST bytes from OUT - DIST into OUT + DIST * k, for 0 <= k < LEN/DIST.
    Return OUT + LEN. */
-static inline uint8_t* CSTATIC(CHUNKMEMSET)(uint8_t *out, unsigned dist, unsigned len) {
+static inline uint8_t* CHUNKMEMSET(uint8_t *out, unsigned dist, unsigned len) {
     /* Debug performance related issues when len < sizeof(uint64_t):
        Assert(len >= sizeof(uint64_t), "chunkmemset should be called on larger chunks"); */
     Assert(dist > 0, "chunkmemset cannot have a distance 0");
-    /* Only AVX2 */
-#if CHUNK_SIZE == 32 && defined(X86_SSE41) && defined(X86_SSE2)
-    if (len <= 16) {
-        return chunkmemset_sse41(out, dist, len);
-    }
-#endif
 
     uint8_t *from = out - dist;
 
@@ -175,10 +165,6 @@ static inline uint8_t* CSTATIC(CHUNKMEMSET)(uint8_t *out, unsigned dist, unsigne
     }
 
     return out;
-}
-
-Z_INTERNAL uint8_t* CHUNKMEMSET(uint8_t *out, unsigned dist, unsigned len) {
-    return CSTATIC(CHUNKMEMSET)(out, dist, len);
 }
 
 static inline uint8_t* CSTATIC(CHUNKMEMSET_SAFE)(uint8_t *out, unsigned dist, unsigned len, unsigned left) {

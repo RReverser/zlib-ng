@@ -53,8 +53,6 @@ static inline void storechunk(uint8_t *out, chunk_t *chunk) {
 #define CHUNKCOPY        chunkcopy_sse2_static
 #undef CHUNKUNROLL
 #define CHUNKUNROLL      chunkunroll_sse2_static
-#undef CHUNKMEMSET
-#define CHUNKMEMSET      chunkmemset_sse2_static
 #undef CHUNKMEMSET_SAFE
 #define CHUNKMEMSET_SAFE chunkmemset_safe_sse2_static
 
