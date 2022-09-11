@@ -25,6 +25,12 @@
 #  define z_const
 #endif
 
+#ifdef ZLIB_COMPAT
+#  define z_size_t unsigned long
+#else
+#  define z_size_t size_t
+#endif
+
 /* Maximum value for memLevel in deflateInit2 */
 #ifndef MAX_MEM_LEVEL
 #  define MAX_MEM_LEVEL 9
@@ -57,6 +63,10 @@
 
 #ifndef OF /* function prototypes */
 #  define OF(args)  args
+#endif
+
+#ifndef FAR
+#  define FAR
 #endif
 
 #ifdef ZLIB_INTERNAL

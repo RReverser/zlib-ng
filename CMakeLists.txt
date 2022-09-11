@@ -146,9 +146,11 @@ mark_as_advanced(FORCE
 
 if(ZLIB_COMPAT)
     add_definitions(-DZLIB_COMPAT)
-    set(WITH_GZFILEOP ON)
     set(SUFFIX "")
     set(ZLIB_FULL_VERSION ${ZLIB_HEADER_VERSION}.zlib-ng)
+    if(NOT DEFINED WITH_GZFILEOP)
+        set(WITH_GZFILEOP OFF)
+    endif()
 else()
     set(SUFFIX "-ng")
     set(ZLIB_FULL_VERSION ${ZLIBNG_HEADER_VERSION})
@@ -981,12 +983,12 @@ set(ZLIB_SRCS
 )
 
 set(ZLIB_GZFILE_PRIVATE_HDRS
-    gzguts.h
+    ${CMAKE_SOURCE_DIR}/gzguts.h
 )
 set(ZLIB_GZFILE_SRCS
-    gzlib.c
+    ${CMAKE_SOURCE_DIR}/gzlib.c
     ${CMAKE_CURRENT_BINARY_DIR}/gzread.c
-    gzwrite.c
+    ${CMAKE_SOURCE_DIR}/gzwrite.c
 )
 
 set(ZLIB_ALL_SRCS ${ZLIB_SRCS} ${ZLIB_ARCH_HDRS} ${ZLIB_ARCH_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})

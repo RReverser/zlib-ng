@@ -6,6 +6,27 @@
 #include "zbuild.h"
 #include "zutil_p.h"
 #include "gzguts.h"
+#ifdef ZSTD_WRAPPER
+#  define ZPREFIX(x) z_ ## x
+
+ZEXTERN int ZEXPORT z_inflateInit_ OF((z_streamp strm,
+                                     const char* version, int stream_size));
+ZEXTERN int ZEXPORT z_inflateInit2_ OF((z_streamp strm, int  windowBits,
+                                      const char *version, int stream_size));
+#define z_inflateInit2(strm, windowBits) z_inflateInit2_((strm), (windowBits), ZLIB_VERSION, (int)sizeof(z_stream))
+ZEXTERN int ZEXPORT z_inflateReset OF((z_streamp strm));
+ZEXTERN int ZEXPORT z_inflateReset2 OF((z_streamp strm,
+                                      int windowBits));
+ZEXTERN int ZEXPORT z_inflateSetDictionary OF((z_streamp strm,
+                                             const Bytef *dictionary,
+                                             uInt  dictLength));
+
+ZEXTERN int ZEXPORT z_inflate OF((z_streamp strm, int flush));
+
+ZEXTERN int ZEXPORT z_inflateEnd OF((z_streamp strm));
+#else
+#  define ZPREFIX PREFIX
+#endif
 
 /* Local functions */
 static int gz_load(gz_state *, unsigned char *, unsigned, unsigned *);

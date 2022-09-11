@@ -205,3 +205,43 @@ else()
     add_test(NAME gtest_zlib
         COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:gtest_zlib>)
 endif()
+
+# Allow specifying alternative Facebook zstd repository
+if(NOT DEFINED ZSTD_REPOSITORY)
+    set(ZSTD_REPOSITORY https://github.com/facebook/zstd.git)
+endif()
+if(NOT DEFINED ZSTD_TAG)
+    set(ZSTD_TAG v1.5.2)
+endif()
+
+FetchContent_Declare(zstd
+    GIT_REPOSITORY ${ZSTD_REPOSITORY}
+    GIT_TAG ${ZSTD_TAG})
+
+FetchContent_GetProperties(zstd)
+if(NOT zstd_POPULATED)
+    FetchContent_Populate(zstd)
+    add_subdirectory(${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
+endif()
+
+add_executable(minigzip_zstd
+    minigzip.c
+    ${ZLIB_GZFILE_PRIVATE_HDRS}
+    ${ZLIB_GZFILE_SRCS}
+    ${zstd_SOURCE_DIR}/zlibWrapper/zstd_zlibwrapper.h
+    ${zstd_SOURCE_DIR}/zlibWrapper/zstd_zlibwrapper.c
+    )
+
+target_compile_definitions(minigzip_zstd PRIVATE ZSTD_WRAPPER WITH_GZFILEOP ZWRAP_USE_ZSTD=1)
+target_include_directories(minigzip_zstd PRIVATE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
+    ${zstd_SOURCE_DIR}/lib
+    ${zstd_SOURCE_DIR}/zlibWrapper)
+configure_test_executable(minigzip_zstd)
+
+if(NOT DEFINED BUILD_SHARED_LIBS OR NOT BUILD_SHARED_LIBS)
+    target_link_libraries(minigzip_zstd zlibstatic libzstd_static)
+else()
+    target_link_libraries(minigzip_zstd zlib libzstd_shared)
+endif()

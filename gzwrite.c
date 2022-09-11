@@ -7,6 +7,28 @@
 #include "zutil_p.h"
 #include <stdarg.h>
 #include "gzguts.h"
+#ifdef ZSTD_WRAPPER
+#  define ZPREFIX(x) z_ ## x
+ZEXTERN int ZEXPORT z_deflateInit_ OF((z_streamp strm, int level,
+                                     const char *version, int stream_size));
+ZEXTERN int ZEXPORT z_deflateInit2_ OF((z_streamp strm, int level, int method,
+                                      int windowBits, int memLevel,
+                                      int strategy, const char *version,
+                                      int stream_size));
+#define z_deflateInit2(strm, level, method, windowBits, memLevel, strategy) \
+        z_deflateInit2_((strm), (level), (method), (windowBits), (memLevel), \
+                     (strategy), ZLIB_VERSION, (int)sizeof(z_stream))
+ZEXTERN int ZEXPORT z_deflateReset OF((z_streamp strm));
+ZEXTERN int ZEXPORT z_deflate OF((z_streamp strm, int flush));
+ZEXTERN int ZEXPORT z_deflateEnd OF((z_streamp strm));
+ZEXTERN uLong ZEXPORT z_deflateBound OF((z_streamp strm,
+                                       uLong sourceLen));
+ZEXTERN int ZEXPORT z_deflateParams OF((z_streamp strm,
+                                      int level,
+                                      int strategy));
+#else
+#  define ZPREFIX PREFIX
+#endif
 
 /* Local functions */
 static int gz_init(gz_state *);
@@ -43,7 +65,7 @@ static int gz_init(gz_state *state) {
         strm->zalloc = NULL;
         strm->zfree = NULL;
         strm->opaque = NULL;
-        ret = PREFIX(deflateInit2)(strm, state->level, Z_DEFLATED, MAX_WBITS + 16, DEF_MEM_LEVEL, state->strategy);
+        ret = ZPREFIX(deflateInit2)(strm, state->level, Z_DEFLATED, MAX_WBITS + 16, DEF_MEM_LEVEL, state->strategy);
         if (ret != Z_OK) {
             zng_free(state->out);
             zng_free(state->in);
@@ -97,7 +119,7 @@ static int gz_comp(gz_state *state, int flush) {
         /* don't start a new gzip member unless there is data to write */
         if (strm->avail_in == 0)
             return 0;
-        PREFIX(deflateReset)(strm);
+        ZPREFIX(deflateReset)(strm);
         state->reset = 0;
     }
 
@@ -122,7 +144,7 @@ static int gz_comp(gz_state *state, int flush) {
 
         /* compress */
         have = strm->avail_out;
-        ret = PREFIX(deflate)(strm, flush);
+        ret = ZPREFIX(deflate)(strm, flush);
         if (ret == Z_STREAM_ERROR) {
             gz_error(state, Z_STREAM_ERROR, "internal error: deflate stream corrupt");
             return -1;
@@ -479,7 +501,7 @@ int Z_EXPORT PREFIX(gzsetparams)(gzFile file, int level, int strategy) {
         /* flush previous input with previous parameters before changing */
         if (strm->avail_in && gz_comp(state, Z_BLOCK) == -1)
             return state->err;
-        PREFIX(deflateParams)(strm, level, strategy);
+        ZPREFIX(deflateParams)(strm, level, strategy);
     }
     state->level = level;
     state->strategy = strategy;
@@ -512,7 +534,7 @@ int Z_EXPORT PREFIX(gzclose_w)(gzFile file) {
         ret = state->err;
     if (state->size) {
         if (!state->direct) {
-            (void)PREFIX(deflateEnd)(&(state->strm));
+            (void)ZPREFIX(deflateEnd)(&(state->strm));
             zng_free(state->out);
         }
         zng_free(state->in);
