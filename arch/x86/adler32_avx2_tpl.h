@@ -26,10 +26,11 @@ Z_INTERNAL uint32_t adler32_fold_copy_avx2(uint32_t adler, uint8_t *dst, const u
 #else
 Z_INTERNAL uint32_t adler32_avx2(uint32_t adler, const uint8_t *src, uint64_t len) {
 #endif
+    uint32_t adler0, adler1;
+
     if (src == NULL) return 1L;
     if (len == 0) return adler;
 
-    uint32_t adler0, adler1;
     adler1 = (adler >> 16) & 0xffff;
     adler0 = adler & 0xffff;
 

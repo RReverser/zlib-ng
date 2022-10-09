@@ -467,14 +467,16 @@ static void send_tree(deflate_state *s, ct_data *tree, int max_code) {
     int count = 0;             /* repeat count of the current code */
     int max_count = 7;         /* max repeat count */
     int min_count = 4;         /* min repeat count */
+    uint32_t bi_valid;
+    uint64_t bi_buf;
 
     /* tree[max_code+1].Len = -1; */  /* guard already set */
     if (nextlen == 0)
         max_count = 138, min_count = 3;
 
     // Temp local variables
-    uint32_t bi_valid = s->bi_valid;
-    uint64_t bi_buf = s->bi_buf;
+    bi_valid = s->bi_valid;
+    bi_buf = s->bi_buf;
 
     for (n = 0; n <= max_code; n++) {
         curlen = nextlen;
