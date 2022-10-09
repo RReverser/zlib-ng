@@ -55,6 +55,11 @@ jobs:
         choco uninstall --no-progress strawberryperl
         choco install --no-progress ninja ${{ matrix.packages }}
 
+    - name: Select MSVC version
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-version: '12'
+
     - name: Install packages (macOS)
       if: runner.os == 'macOS'
       run: brew install ninja ${{ matrix.packages }}
