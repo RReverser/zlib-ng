@@ -12,18 +12,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Windows MSVC 2013 Win32
+          - name: Windows MSVC 2013 v120 Win32
             os: windows-2019
             compiler: cl
-            cmake-args: -G "Visual Studio 12 2013" -A Win32
-            packages: visualstudiocommunity2013
+            cmake-args: -G "Visual Studio 12 2013" -A Win32 -T v120
+            packages: visualstudioexpress2013windows
 
-          - name: Windows MSVC 2013 Win64
+          - name: Windows MSVC 2013 v120 Win64
             os: windows-2019
             compiler: cl
-            cmake-args: -G "Visual Studio 12 2013" -A x64
-            packages: visualstudiocommunity2013
-
+            cmake-args: -G "Visual Studio 12 2013" -A x64 -T v120
+            packages: visualstudioexpress2013windows
 
     steps:
     - name: Checkout repository
