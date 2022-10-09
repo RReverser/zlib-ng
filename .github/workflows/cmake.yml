@@ -16,13 +16,13 @@ jobs:
             os: windows-2019
             compiler: cl
             cmake-args: -G "Visual Studio 12 2013" -A Win32 -T v120
-            packages: visualstudioexpress2013windows
+            packages: microsoft-build-tools-2013
 
           - name: Windows MSVC 2013 v120 Win64
             os: windows-2019
             compiler: cl
             cmake-args: -G "Visual Studio 12 2013" -A x64 -T v120
-            packages: visualstudioexpress2013windows
+            packages: microsoft-build-tools-2013
 
     steps:
     - name: Checkout repository
