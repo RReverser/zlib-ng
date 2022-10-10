@@ -8,6 +8,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - name: Ubuntu GCC ARM SF
+            os: ubuntu-latest
+            compiler: arm-linux-gnueabi-gcc
+            configure-args: --warn
+            chost: arm-linux-gnueabi
+            packages: qemu qemu-user gcc-arm-linux-gnueabi libc-dev-armel-cross
+
           - name: Ubuntu Emscripten WASM32
             os: ubuntu-latest
             chost: wasm32

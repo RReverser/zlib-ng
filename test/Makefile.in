@@ -15,10 +15,17 @@ EMU_RUN=
 all: alltests
 
 alltests: #set by ../configure
+check_cross_dep:
+QEMU_VER:=$(shell command -v $(EMU_RUN) --version 2> /dev/null)
+ifneq (,$(findstring qemu,$(EMU_RUN)))
+ifeq (,$(QEMU_VER))
+	$(error "You need QEMU to run tests on non-native platform")
+endif
+endif
 
 ALL_SRC_FILES := $(wildcard ../*)
 
-teststatic:
+teststatic: check_cross_dep
 	@TMPST=tmpst_$$$$; \
 	HELLOST=tmphellost_$$$$; \
 	if echo hello world | ${EMU_RUN} ../minigzip$(EXE) > $$HELLOST && ${EMU_RUN} ../minigzip$(EXE) -d < $$HELLOST && ${EMU_RUN} ../example$(EXE) $$TMPST; then \
@@ -28,7 +35,7 @@ teststatic:
 	fi; \
 	rm -f $$TMPST $$HELLOST
 
-testshared:
+testshared: check_cross_dep
 	@LD_LIBRARY_PATH=`pwd`/..:$(LD_LIBRARY_PATH) ; export LD_LIBRARY_PATH; \
 	LD_LIBRARYN32_PATH=`pwd`/..:$(LD_LIBRARYN32_PATH) ; export LD_LIBRARYN32_PATH; \
 	DYLD_LIBRARY_PATH=`pwd`/..:$(DYLD_LIBRARY_PATH) ; export DYLD_LIBRARY_PATH; \
