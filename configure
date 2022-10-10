@@ -2179,8 +2179,8 @@ fi
 # Determine emulator to use when running tests
 if test -z "$EMU_RUN" && test $QEMU_ARCH; then
     EMU_RUN="qemu-$QEMU_ARCH -L /usr/${CHOST}/"
-    echo "Using cross-compile emulator: $QEMU_VER"
-elif test -n "$EMU_RUN"; then
+fi
+if test -n "$EMU_RUN"; then
     echo "Using cross-compile emulator: $EMU_RUN"
 fi
 
