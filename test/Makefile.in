@@ -17,6 +17,7 @@ all: alltests
 alltests: #set by ../configure
 check_cross_dep:
 QEMU_VER:=$(shell command -v $(EMU_RUN) --version 2> /dev/null)
+echo "QEMU_VER=$(QEMU_VER)"
 ifneq (,$(findstring qemu,$(EMU_RUN)))
 ifeq (,$(QEMU_VER))
 	$(error "You need QEMU to run tests on non-native platform")
